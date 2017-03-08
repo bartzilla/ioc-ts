@@ -1,0 +1,15 @@
+{
+  "name": "ioc_ts",
+  "version": "1.0.0",
+  "description": "This is IoC demo using TypeScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Cipriano",
+  "license": "ISC",
+  "dependencies": {
+    "inversify": "^3.1.0",
+    "reflect-metadata": "^0.1.10"
+  }
+}
