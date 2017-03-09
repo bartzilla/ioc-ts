@@ -9,6 +9,7 @@
   "author": "Cipriano",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.15.2",
     "inversify": "^3.1.0",
     "reflect-metadata": "^0.1.10"
   }
