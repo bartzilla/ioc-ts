@@ -5,6 +5,7 @@
     "lib": ["es6", "dom"],
     "noImplicitAny": false,
     "sourceMap": true,
+    "inlineSources": true,
     "strictNullChecks": true,
     "noEmitOnError": true,
     "types": ["reflect-metadata"],
