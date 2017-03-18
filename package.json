@@ -4,6 +4,7 @@
   "description": "This is IoC demo using TypeScript",
   "main": "index.js",
   "scripts": {
+    "pretest": "tsc",
     "test": "_mocha server/test/**/*.js"
   },
   "author": "Cipriano",

@@ -30,6 +30,8 @@ export class Config {
         // Create a Tenant
         let newTenant = new Tenant("1","Microsoft", "cipriano.sanchez@microsoft.com", "1234", applications);
 
-        tenantService.registerNewTenant(newTenant);
+        tenantService.registerNewTenant(newTenant, () => {
+            console.log('Should be done');
+        });
     }
 }
