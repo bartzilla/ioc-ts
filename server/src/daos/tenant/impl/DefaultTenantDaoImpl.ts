@@ -10,6 +10,5 @@ export class DefaultTenantDaoImpl implements TenantDao{
         console.log('SAVE THE TENANT!!');
         let savedTenant = tenant;
         callback(undefined, tenant);
-
     }
 }

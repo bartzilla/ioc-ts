@@ -4,10 +4,28 @@
   "description": "This is IoC demo using TypeScript",
   "main": "index.js",
   "scripts": {
-    "pretest": "tsc",
-    "test": "_mocha server/test/**/*.js",
+    "test": "nyc _mocha server/test/**/*.ts",
     "cover": "istanbul cover _mocha server/test/**/*.js",
-    "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls"
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
+  },
+  "nyc": {
+    "include": [
+      "server/**/*.ts",
+      "server/**/*.tsx"
+    ],
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "text-summary",
+      "html"
+    ],
+    "sourceMap": true,
+    "instrument": true
   },
   "author": "Cipriano",
   "license": "ISC",
@@ -26,8 +44,10 @@
     "istanbul": "^0.4.5",
     "mocha": "^3.2.0",
     "mocha-lcov-reporter": "^1.3.0",
+    "nyc": "^10.1.2",
     "rewire": "^2.5.2",
     "sinon": "^1.17.7",
+    "source-map-support": "^0.4.14",
     "ts-node": "^2.1.0"
   }
 }
