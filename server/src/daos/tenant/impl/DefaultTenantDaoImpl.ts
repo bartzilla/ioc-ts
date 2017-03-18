@@ -5,7 +5,11 @@ import "reflect-metadata";
 
 @injectable()
 export class DefaultTenantDaoImpl implements TenantDao{
-    save(tenant: Tenant): void {
+    save(tenant: Tenant, callback: (error: Error | undefined, tenant?: Tenant) => void): void {
+
         console.log('SAVE THE TENANT!!');
+        let savedTenant = tenant;
+        callback(undefined, tenant);
+
     }
 }

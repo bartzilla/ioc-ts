@@ -5,10 +5,6 @@ import {DefaultTenantServiceImpl} from "../../../../src/services/tenant/impl/Def
 
 describe('DefaultTenantServiceUnitTest', () => {
 
-    beforeEach(() => {
-
-    });
-
     it('should be able to init app', () =>  {
 
         let tenantDaoMock = {
@@ -17,8 +13,10 @@ describe('DefaultTenantServiceUnitTest', () => {
         let tenantService = new DefaultTenantServiceImpl(tenantDaoMock);
 
         let newTenant = new Tenant("1","Microsoft", "cipriano.sanchez@microsoft.com", "1234", new Array());
-        tenantService.registerNewTenant(newTenant);
 
-        expect(tenantDaoMock.save.callCount).to.equal(1);
+        tenantService.registerNewTenant(newTenant, (err, tenant) => {
+            expect(tenantDaoMock.save.callCount).to.equal(1);
+        });
+
     });
 });
