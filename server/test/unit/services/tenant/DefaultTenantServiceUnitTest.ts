@@ -19,9 +19,7 @@ describe('DefaultTenantServiceUnitTest', () => {
         tenantService.registerNewTenant(newTenant, callback);
 
         tenantService.registerNewTenant(newTenant, (err, tenant) => {
-            if(tenant !== undefined){
-                expect(tenant.id).to.equal("1");
-            }
+            expect(tenant.id).to.equal("1");
         });
 
         tenantDaoMock = {
