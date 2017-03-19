@@ -14,11 +14,11 @@ export class DefaultTenantServiceImpl implements TenantService {
         this.tenantDao = tenantDao;
     }
 
-    public registerNewTenant(tenant: Tenant, callback: (err: Error | undefined, tenant: Tenant) => void): void {
+    public registerNewTenant(tenant: Tenant, callback: (err: Error | undefined, tenant?: Tenant) => void): void {
 
         this.tenantDao.save(tenant, (daoErr: Error, daoTenant: Tenant) => {
 
-            if(daoErr) return daoErr;
+            if(daoErr) return callback(daoErr);
 
             callback(undefined, daoTenant);
         });

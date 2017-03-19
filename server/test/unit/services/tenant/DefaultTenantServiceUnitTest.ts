@@ -19,7 +19,18 @@ describe('DefaultTenantServiceUnitTest', () => {
         tenantService.registerNewTenant(newTenant, callback);
 
         tenantService.registerNewTenant(newTenant, (err, tenant) => {
-            expect(tenant.id).to.equal("1");
+            if(tenant !== undefined){
+                expect(tenant.id).to.equal("1");
+            }
+        });
+
+        tenantDaoMock = {
+            save: sinon.stub().yields(new Error())
+        };
+        tenantService = new DefaultTenantServiceImpl(tenantDaoMock);
+
+        tenantService.registerNewTenant(newTenant, (err, tenant) => {
+            expect(tenant).to.equal(undefined);
         });
 
     });
