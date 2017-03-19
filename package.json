@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "nyc _mocha server/test/**/*.ts",
-    "cover": "istanbul cover _mocha server/test/**/*.js",
+    "cover": "istanbul cover _mocha server/**/*.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "nyc": {
