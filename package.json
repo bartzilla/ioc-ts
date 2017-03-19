@@ -12,6 +12,11 @@
       "server/**/*.ts",
       "server/**/*.tsx"
     ],
+    "exclude": [
+      "server/src/config/**/*.ts",
+      "server/src/domain/**/*.ts",
+      "server/src/db/model/**/*.ts"
+    ],
     "extension": [
       ".ts",
       ".tsx"
