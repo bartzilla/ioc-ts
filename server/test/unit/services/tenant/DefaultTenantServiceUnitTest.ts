@@ -5,18 +5,26 @@ import {DefaultTenantServiceImpl} from "../../../../src/services/tenant/impl/Def
 
 describe('DefaultTenantServiceUnitTest', () => {
 
-    it('should be able to init app', () =>  {
-
-        let tenantDaoMock = {
-            save: sinon.spy()
-        };
-        let tenantService = new DefaultTenantServiceImpl(tenantDaoMock);
+    it('it receives a saved tenant', () =>  {
 
         let newTenant = new Tenant("1","Microsoft", "cipriano.sanchez@microsoft.com", "1234", new Array());
 
-        tenantService.registerNewTenant(newTenant, (err, tenant) => {
-            expect(tenantDaoMock.save.callCount).to.equal(1);
-        });
+        let tenantDaoMock = {
+            save: sinon.stub().yields(undefined, newTenant)
+        };
+
+        let callback = sinon.spy();
+        let tenantService = new DefaultTenantServiceImpl(tenantDaoMock);
+
+        tenantService.registerNewTenant(newTenant, callback);
+        // tenantService.registerNewTenant(newTenant, (err, tenant) => {
+        //     expect(tenantDaoMock.save.calledWith(newTenant));
+        // });
 
     });
+
+    // it('it calls save with a correct tenant', () =>  {
+    //
+    //
+    // });
 });
