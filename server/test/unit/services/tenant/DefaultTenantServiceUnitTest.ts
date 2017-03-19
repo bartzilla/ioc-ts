@@ -17,9 +17,10 @@ describe('DefaultTenantServiceUnitTest', () => {
         let tenantService = new DefaultTenantServiceImpl(tenantDaoMock);
 
         tenantService.registerNewTenant(newTenant, callback);
-        // tenantService.registerNewTenant(newTenant, (err, tenant) => {
-        //     expect(tenantDaoMock.save.calledWith(newTenant));
-        // });
+
+        tenantService.registerNewTenant(newTenant, (err, tenant) => {
+            expect(tenant.id).to.equal("1");
+        });
 
     });
 
