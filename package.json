@@ -7,21 +7,6 @@
     "test": "nyc mocha server/test/**/*.ts",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
-  "nyc": {
-    "extension": [
-      ".ts"
-    ],
-    "require": [
-      "ts-node/register"
-    ],
-    "reporter": [
-      "text-summary",
-      "html"
-    ],
-    "sourceMap": true,
-    "instrument": true,
-    "produce-source-map": true
-  },
   "author": "Cipriano",
   "license": "ISC",
   "dependencies": {

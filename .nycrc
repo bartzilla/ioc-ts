@@ -1,0 +1,22 @@
+{
+    "exclude": [
+        "server/src/config",
+        "server/src/daos/types",
+        "server/src/db/model",
+        "server/src/domain",
+        "server/services/types"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "text-summary",
+      "html"
+    ],
+    "sourceMap": true,
+    "instrument": true,
+    "produce-source-map": true
+}
