@@ -4,22 +4,12 @@
   "description": "This is IoC demo using TypeScript",
   "main": "index.js",
   "scripts": {
-    "test": "nyc _mocha server/**/*.ts",
+    "test": "nyc mocha server/test/**/*.ts",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "nyc": {
-    "include": [
-      "server/**/*.ts",
-      "server/**/*.tsx"
-    ],
-    "exclude": [
-      "server/src/config/**/*.ts",
-      "server/src/domain/**/*.ts",
-      "server/src/db/model/**/*.ts"
-    ],
     "extension": [
-      ".ts",
-      ".tsx"
+      ".ts"
     ],
     "require": [
       "ts-node/register"
@@ -29,7 +19,8 @@
       "html"
     ],
     "sourceMap": true,
-    "instrument": true
+    "instrument": true,
+    "produce-source-map": true
   },
   "author": "Cipriano",
   "license": "ISC",
@@ -45,11 +36,9 @@
     "@types/node": "^7.0.7",
     "chai": "^3.5.0",
     "coveralls": "^2.12.0",
-    "istanbul": "^0.4.5",
     "mocha": "^3.2.0",
     "mocha-lcov-reporter": "^1.3.0",
     "nyc": "^10.1.2",
-    "rewire": "^2.5.2",
     "sinon": "^1.17.7",
     "source-map-support": "^0.4.14",
     "ts-node": "^2.1.0"

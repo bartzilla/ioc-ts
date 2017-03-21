@@ -7,11 +7,9 @@
     "sourceMap": true,
     "inlineSources": true,
     "noEmitOnError": true,
-    "types": ["reflect-metadata"],
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "rootDir": "server",
     "forceConsistentCasingInFileNames": true,
     "newLine": "LF"
   }
