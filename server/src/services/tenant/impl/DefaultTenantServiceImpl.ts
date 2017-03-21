@@ -16,11 +16,16 @@ export class DefaultTenantServiceImpl implements TenantService {
 
     public registerNewTenant(tenant: Tenant, callback: (err: Error | undefined, tenant?: Tenant) => void): void {
 
-        this.tenantDao.save(tenant, (daoErr: Error, daoTenant: Tenant) => {
+        if(typeof callback === "function"){
+            this.tenantDao.save(tenant, (daoErr: Error, daoTenant: Tenant) => {
 
-            if(daoErr) return callback(daoErr);
+                if(daoErr) return callback(daoErr);
 
-            callback(undefined, daoTenant);
-        });
+                callback(undefined, daoTenant);
+            });
+        }else {
+            console.log('[doormanjs]: Callback was not provided');
+        }
+
     }
 }
