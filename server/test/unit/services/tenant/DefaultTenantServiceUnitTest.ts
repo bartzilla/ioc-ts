@@ -65,7 +65,7 @@ describe('DefaultTenantServiceUnitTest', () => {
 
         tenantService.registerNewTenant(this.newTenant, null);
 
-        //console log logging "Callback was not provided"
+        //console log "Callback was not provided"
         expect(consoleMock.log.callCount).to.equal(1);
     });
 });
