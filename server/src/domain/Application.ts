@@ -1,18 +1,12 @@
 import {Account} from "./Account";
 export class Application {
 
-    private _id: string;
     private _name: string;
     private _accounts: Array<Account>;
 
-    constructor(id: string, name: string, accounts: Array<Account>) {
-        this._id = id;
+    constructor(name: string, accounts: Array<Account>) {
         this._name = name;
         this._accounts = accounts;
-    }
-
-    get id(): string {
-        return this._id;
     }
 
     get name(): string {

@@ -1,25 +1,16 @@
 import {Application} from "./Application";
 export class Tenant {
 
-    private _id: string;
     private _tenantName: string;
     private _adminEmail: string;
     private _adminPassword: string;
     private _applications: Array<Application>;
 
+    constructor(tenantName: string, adminEmail: string, adminPassword: string) {
 
-    constructor(id: string, tenantName: string, adminEmail: string, adminPassword: string,
-                applications: Array<Application>) {
-
-        this._id = id;
         this._tenantName = tenantName;
         this._adminEmail = adminEmail;
         this._adminPassword = adminPassword;
-        this._applications = applications;
-    }
-
-    get id(): string {
-        return this._id;
     }
 
     get tenantName(): string {

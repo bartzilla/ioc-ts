@@ -7,7 +7,7 @@ import {DefaultTenantServiceImpl} from "../../../../src/services/tenant/impl/Def
 describe('DefaultTenantServiceUnitTest', () => {
 
     beforeEach(() => {
-        this.newTenant = new Tenant("1","Microsoft", "cipriano.sanchez@microsoft.com", "1234", new Array());
+        this.newTenant = new Tenant("Microsoft", "cipriano.sanchez@microsoft.com", "1234");
     });
 
     it("it tests that tenantDao.save has been called", () => {
@@ -33,7 +33,7 @@ describe('DefaultTenantServiceUnitTest', () => {
         let tenantService = new DefaultTenantServiceImpl(tenantDaoMock);
 
         tenantService.registerNewTenant(this.newTenant, (err, tenant) => {
-            expect(tenant.id).to.equal("1");
+            expect(tenant.tenantName).to.equal("Microsoft");
         });
     });
 

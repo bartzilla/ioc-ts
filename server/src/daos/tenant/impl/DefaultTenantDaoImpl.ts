@@ -2,7 +2,7 @@ import {TenantDao} from "../TenantDao";
 import {Tenant} from "../../../domain/Tenant";
 import {injectable} from "inversify";
 import "reflect-metadata";
-var TenantModel = require("../../../db/model/Tenant");
+import {TenantModel} from "../../../db/mongo/impl/TenantModel"
 
 @injectable()
 export class DefaultTenantDaoImpl implements TenantDao{
@@ -10,11 +10,11 @@ export class DefaultTenantDaoImpl implements TenantDao{
 
         var newTenant = new TenantModel(tenant);
 
-        TenantModel.createTenant(newTenant, function(err, tenant){
+        newTenant.createTenant(newTenant, (err, tenant) => {
             if(err) {
                 throw err;
             }
-            else{
+            else {
                 console.log('Tenant successfully created: ', tenant);
                 return callback(null, tenant);
             }
