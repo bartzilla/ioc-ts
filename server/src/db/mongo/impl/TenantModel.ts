@@ -47,11 +47,24 @@ export var TenantSchema: Schema = new Schema({
     }]
 });
 
-TenantSchema.methods.createTenant = function(newTenant: ITenantModel, callback): void{
-    bcrypt.genSalt(10, function(err, salt) {
-        bcrypt.hash(newTenant._adminPassword, salt, function(err, hash) {
+TenantSchema.methods.createTenant = function(newTenant: ITenantModel, callback: (err: Error | undefined, tenant?: ITenantModel) => void): void{
+    bcrypt.genSalt(10, (err, salt) => {
+
+        if(err){
+            console.log('[CREATE-TENANT] Error while while generating the salt for passowrd', err);
+            return callback(err);
+        }
+
+        bcrypt.hash(newTenant._adminPassword, salt, (err, hash) => {
+
+            if(err) {
+                console.log('[CREATE-TENANT] Error while while hashing passowrd', err);
+                return callback(err);
+            }
             newTenant._adminPassword = hash;
-            newTenant.save(callback);
+            newTenant.save();
+
+            return callback(undefined, newTenant);
         });
     });
 };

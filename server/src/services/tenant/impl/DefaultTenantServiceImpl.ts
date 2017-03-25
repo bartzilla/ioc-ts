@@ -26,6 +26,5 @@ export class DefaultTenantServiceImpl implements TenantService {
         }else {
             console.log('[doormanjs]: Callback was not provided');
         }
-
     }
 }

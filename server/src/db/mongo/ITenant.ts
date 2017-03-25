@@ -5,11 +5,5 @@ export interface ITenant {
     _adminEmail?: string;
     _adminPassword: string;
     _role: string;
-    _applications: [{
-        _name: string;
-        _accounts: [{
-            _email: string;
-            _password: string;
-        }]
-    }]
+    _applications: Array<Application>;
 }
