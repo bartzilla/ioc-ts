@@ -4,7 +4,7 @@ export class Application {
     private _name: string;
     private _accounts: Array<Account>;
 
-    constructor(name: string, accounts: Array<Account>) {
+    constructor(name: string, accounts?: Array<Account>) {
         this._name = name;
         this._accounts = accounts;
     }

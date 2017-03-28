@@ -1,5 +1,5 @@
 let TYPES = {
-    BookService: Symbol("BookService"),
+    ApplicationService: Symbol("ApplicationService"),
     TenantService: Symbol("TenantService"),
 };
 

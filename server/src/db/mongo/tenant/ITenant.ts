@@ -1,5 +1,4 @@
-import {Tenant} from "../../domain/Tenant";
-import {Application} from "../../domain/Application";
+import {Application} from "../../../domain/Application";
 export interface ITenant {
     _tenantName: string;
     _adminEmail?: string;

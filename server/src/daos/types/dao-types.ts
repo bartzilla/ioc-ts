@@ -1,5 +1,5 @@
 let TYPES = {
-    BookDao: Symbol("BookDao"),
+    ApplicationDao: Symbol("ApplicationDao"),
     TenantDao: Symbol("TenantDao"),
     // Weapon: Symbol("Weapon"),
     // ThrowableWeapon: Symbol("ThrowableWeapon")

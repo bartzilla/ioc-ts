@@ -24,6 +24,7 @@ export class TenantRouter {
      * endpoints.
      */
     init() {
+        // this.router.post('/', this.addTenant);
         this.router.post('/', this.addTenant);
     }
 

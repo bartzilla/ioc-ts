@@ -27,4 +27,17 @@ export class DefaultTenantServiceImpl implements TenantService {
             console.log('[doormanjs]: Callback was not provided');
         }
     }
+
+    public findTenantById(tenantId: string, callback: (error: (Error|any), tenant?: Tenant) => void): void {
+        if(typeof callback === "function"){
+            this.tenantDao.getTenantById(tenantId, (daoErr: Error, daoTenant: Tenant) => {
+
+                if(daoErr) return callback(daoErr);
+
+                callback(undefined, daoTenant);
+            });
+        }else {
+            console.log('[doormanjs]: Callback was not provided');
+        }
+    }
 }

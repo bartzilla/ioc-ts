@@ -4,6 +4,7 @@ import * as bcrypt from "bcrypt";
 
 export interface ITenantModel extends ITenant, Document {
     createTenant(newTenant, callback): void;
+    findById(tenantId, callback): void
 }
 
 export var TenantSchema: Schema = new Schema({
@@ -27,30 +28,13 @@ export var TenantSchema: Schema = new Schema({
         enum: ['Client', 'Manager', 'Admin'],
         default: 'Client'
     },
-    _applications:[{
-        _name: {
-            type: String
-        },
-        _accounts: [{
-            _email: {
-                type: String,
-                lowercase: true,
-                unique: true,
-                sparse: true,
-                required: true
-            },
-            _password: {
-                type: String,
-                required: true
-            }
-        }]
-    }]
+    _applications:[{type: Schema.Types.ObjectId, ref: 'Application'}]
 });
 
 TenantSchema.methods.createTenant = function(newTenant: ITenantModel, callback: (err: Error | undefined, tenant?: ITenantModel) => void): void{
     bcrypt.genSalt(10, (err, salt) => {
 
-        if(err){
+        if(err) {
             console.log('[CREATE-TENANT] Error while while generating the salt for passowrd', err);
             return callback(err);
         }
@@ -67,6 +51,21 @@ TenantSchema.methods.createTenant = function(newTenant: ITenantModel, callback: 
             return callback(undefined, newTenant);
         });
     });
+};
+
+TenantSchema.methods.findById = function(tenantId: string, callback: (err: Error | undefined, tenant?: ITenantModel) => void): void{
+
+
+    TenantModel.findOne(
+        {
+            _id: tenantId
+        },
+        function(dbErr, dbRes){
+            console.log("Okay lets get that shit!! ", dbRes);
+
+        });
+
+    return callback(undefined, null);
 };
 
 export const TenantModel: Model<ITenantModel> = model<ITenantModel>("Tenant", TenantSchema);
