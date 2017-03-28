@@ -13,7 +13,8 @@ describe('DefaultTenantServiceUnitTest', () => {
     it("it tests that tenantDao.save has been called", () => {
 
         let tenantDaoMock = {
-            save: sinon.spy()
+            save: sinon.spy(),
+            getTenantById: sinon.stub().yields(this.newTenant)
         };
 
         let callback = sinon.spy();
@@ -27,7 +28,8 @@ describe('DefaultTenantServiceUnitTest', () => {
     it("should receive the saved tenant", () => {
 
         let tenantDaoMock = {
-            save: sinon.stub().yields(undefined, this.newTenant)
+            save: sinon.stub().yields(undefined, this.newTenant),
+            getTenantById: sinon.stub().yields(this.newTenant)
         };
 
         let tenantService = new DefaultTenantServiceImpl(tenantDaoMock);
@@ -40,7 +42,8 @@ describe('DefaultTenantServiceUnitTest', () => {
     it("should return an undefined tenant if tenantDao.save throws an Error", () => {
 
         let tenantDaoMock = {
-            save: sinon.stub().yields(new Error())
+            save: sinon.stub().yields(new Error()),
+            getTenantById: sinon.stub().yields(this.newTenant)
         };
 
         let tenantService = new DefaultTenantServiceImpl(tenantDaoMock);
@@ -54,7 +57,8 @@ describe('DefaultTenantServiceUnitTest', () => {
     it("should return an error if callback is not a function", () => {
 
         let tenantDaoMock = {
-            save: sinon.stub().yields(this.newTenant)
+            save: sinon.stub().yields(this.newTenant),
+            getTenantById: sinon.stub().yields(this.newTenant)
         };
 
         let consoleMock = {
