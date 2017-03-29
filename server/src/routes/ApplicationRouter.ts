@@ -36,7 +36,7 @@ export class ApplicationRouter {
 
             // Create Application
             let newApplication = new Application( "sable-sun");
-            this.applicationService.registerNewApplication(tenantId, newApplication, function(err, application){
+            this.applicationService.registerNewApplication(tenantId, newApplication, (err: Error, application: Application) => {
                 if(err) {
                     console.log('[APPLICATION]: ERROR: Could not add application.', err);
                     return res.status(500).json({success: false, message: 'Error adding application.'});

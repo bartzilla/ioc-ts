@@ -1,10 +1,11 @@
 import { Document, Schema, Model, model} from "mongoose";
 import {ITenant} from "../ITenant";
 import * as bcrypt from "bcrypt";
+import {ApplicationModel} from "../../application/impl/ApplicationModel";
 
 export interface ITenantModel extends ITenant, Document {
     createTenant(newTenant, callback): void;
-    findById(tenantId, callback): void
+    findById(tenantId, callback): void;
 }
 
 export var TenantSchema: Schema = new Schema({
@@ -55,17 +56,33 @@ TenantSchema.methods.createTenant = function(newTenant: ITenantModel, callback: 
 
 TenantSchema.methods.findById = function(tenantId: string, callback: (err: Error | undefined, tenant?: ITenantModel) => void): void{
 
-
-    TenantModel.findOne(
-        {
-            _id: tenantId
-        },
+    TenantModel.findOne({_id: tenantId},
         function(dbErr, dbRes){
-            console.log("Okay lets get that shit!! ", dbRes);
+            if (dbErr) return callback(undefined);
 
-        });
+            return callback(undefined, dbRes);
+        }
+    );
 
-    return callback(undefined, null);
+    // TenantModel.findOne({_id: tenantId},
+    //     function(dbErr, dbRes){
+    //
+    //         if (dbErr) return callback(undefined);
+    //
+    //         let app = new ApplicationModel();
+    //         app._name = "TEST-APPLICATION";
+    //
+    //         app.save(function (err) {
+    //             if (err) return callback(undefined);
+    //
+    //             dbRes._applications.push(app._id);
+    //             dbRes.save();
+    //
+    //             return callback(undefined, dbRes);
+    //         });
+    //     }
+    // );
+
 };
 
 export const TenantModel: Model<ITenantModel> = model<ITenantModel>("Tenant", TenantSchema);

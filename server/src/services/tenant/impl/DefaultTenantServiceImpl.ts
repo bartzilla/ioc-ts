@@ -4,6 +4,7 @@ import {injectable, inject} from "inversify";
 import {TenantDao} from "../../../daos/tenant/TenantDao";
 import "reflect-metadata";
 import TYPES from "../../../daos/types/dao-types";
+import {ITenantModel} from "../../../db/mongo/tenant/impl/TenantModel";
 
 @injectable()
 export class DefaultTenantServiceImpl implements TenantService {
@@ -28,9 +29,9 @@ export class DefaultTenantServiceImpl implements TenantService {
         }
     }
 
-    public findTenantById(tenantId: string, callback: (error: (Error|any), tenant?: Tenant) => void): void {
+    public findTenantById(tenantId: string, callback: (error: (Error|any), tenant?: ITenantModel) => void): void {
         if(typeof callback === "function"){
-            this.tenantDao.getTenantById(tenantId, (daoErr: Error, daoTenant: Tenant) => {
+            this.tenantDao.getTenantById(tenantId, (daoErr: Error, daoTenant: ITenantModel) => {
 
                 if(daoErr) return callback(daoErr);
 

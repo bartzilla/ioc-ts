@@ -6,6 +6,7 @@ import "reflect-metadata";
 import TYPES from "../../../daos/types/dao-types";
 import {TenantDao} from "../../../daos/tenant/TenantDao";
 import {Tenant} from "../../../domain/Tenant";
+import {ITenantModel} from "../../../db/mongo/tenant/impl/TenantModel";
 
 @injectable()
 export class DefaultApplicationServiceImpl implements ApplicationService {
@@ -21,20 +22,28 @@ export class DefaultApplicationServiceImpl implements ApplicationService {
 
     public registerNewApplication(tenantId: string, application: Application, callback: (err: Error | undefined, application?: Application) => void): void {
 
+        if (typeof callback === "function"){
+            this.tenantDao.getTenantById(tenantId, (tenantDaoErr: Error, daoTenant) => {
+                if(tenantDaoErr) return callback(tenantDaoErr);
+
+                this.applicationDao.save(daoTenant, application, (applicationDaoErr: Error, daoApplication: Application) => {
+
+                })
+            });
+        } else {
+            console.log("[doormanjs]: Callback was not provided");
+        }
 
 
-        this.tenantDao.getTenantById(tenantId, (err: Error, tenant: Tenant) => {
-            console.log("First find Tenant");
-        });
 
-        // if(typeof callback === "function"){
+        // if (typeof callback === "function"){
         //     this.tenantDao.save(tenant, (daoErr: Error, daoTenant: Application) => {
         //
         //         if(daoErr) return callback(daoErr);
         //
         //         callback(undefined, daoTenant);
         //     });
-        // }else {
+        // } else {
         //     console.log('[doormanjs]: Callback was not provided');
         // }
     }

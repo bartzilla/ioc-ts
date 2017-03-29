@@ -2,7 +2,7 @@ import {TenantDao} from "../TenantDao";
 import {Tenant} from "../../../domain/Tenant";
 import {injectable} from "inversify";
 import "reflect-metadata";
-import {TenantModel} from "../../../db/mongo/tenant/impl/TenantModel"
+import {TenantModel, ITenantModel} from "../../../db/mongo/tenant/impl/TenantModel"
 
 @injectable()
 export class DefaultTenantDaoImpl implements TenantDao {
@@ -21,11 +21,11 @@ export class DefaultTenantDaoImpl implements TenantDao {
         });
     }
 
-    getTenantById(tenantId: string, callback: (error: Error, tenant?: Tenant)=>void): void {
+    getTenantById(tenantId: string, callback: (error: Error, tenant?: ITenantModel) => void): void {
 
         var newTenant = new TenantModel();
 
-        newTenant.findById(tenantId, (err, tenant) => {
+        newTenant.findById(tenantId, (err: Error, tenant: ITenantModel) => {
             if(err) {
                 throw err;
             }

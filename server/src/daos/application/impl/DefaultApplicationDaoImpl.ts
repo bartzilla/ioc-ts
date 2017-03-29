@@ -2,22 +2,24 @@ import {ApplicationDao} from "../ApplicationDao";
 import {Application} from "../../../domain/Application";
 import {injectable} from "inversify";
 import "reflect-metadata";
-// import {ApplicationModel} from "../../../db/mongo/impl/ApplicationModel"
+import {Tenant} from "../../../domain/Tenant";
+import {ITenantModel} from "../../../db/mongo/tenant/impl/TenantModel";
+import {ApplicationModel} from "../../../db/mongo/application/impl/ApplicationModel";
 
 @injectable()
 export class DefaultApplicationDaoImpl implements ApplicationDao{
-    save(tenantId: string, application: Application, callback: (error: Error | undefined, application?: Application) => void): void {
+    save(tenant: ITenantModel, application: Application, callback: (error: Error | undefined, application?: Application) => void): void {
 
-        // var newTenant = new TenantModel(tenant);
-        //
-        // newTenant.createTenant(newTenant, (err, tenant) => {
-        //     if(err) {
-        //         throw err;
-        //     }
-        //     else {
-        //         console.log('Tenant successfully created: ', tenant);
-        //         return callback(null, tenant);
-        //     }
-        // });
+        let newApplication = new ApplicationModel(application);
+
+        newApplication.createApplication(tenant, newApplication, (err, application) => {
+            if(err) {
+                throw err;
+            }
+            else {
+                console.log('Application successfully created: ', application);
+                return callback(null, application);
+            }
+        });
     }
 }
