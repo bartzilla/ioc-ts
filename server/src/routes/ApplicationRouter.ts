@@ -27,11 +27,11 @@ export class ApplicationRouter {
      * Take each handler, and attach to one of the Express.Router's
      * endpoints.
      */
-    init() {
+    private init() {
         this.router.post('/:tenantId/applications', this.addApplication);
     }
 
-    public addApplication = (req: Request, res: Response, next: NextFunction) =>  {
+    private addApplication = (req: Request, res: Response, next: NextFunction) =>  {
 
         let tenantId = req.params.tenantId;
 

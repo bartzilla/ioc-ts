@@ -23,7 +23,7 @@ export class TenantRouter {
      * Take each handler, and attach to one of the Express.Router's
      * endpoints.
      */
-    init() {
+    private init() {
         this.router.post('/', this.addTenant);
         this.router.get('/:email', this.getTenantsByEmail);
     }
