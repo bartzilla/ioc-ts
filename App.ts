@@ -1,6 +1,7 @@
 import * as express from 'express';
 import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
+import * as cors from "cors";
 import {TenantRouter} from "./server/src/routes/TenantRouter";
 import container from "./server/src/config/inversify.config";
 import DAO_TYPES from "./server/src/daos/types/dao-types";
@@ -35,12 +36,26 @@ class App {
     private routes(): void {
 
         let router = express.Router();
+
+        //options for cors midddleware
+        const options:cors.CorsOptions = {
+            allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "X-Access-Token"],
+            credentials: true,
+            methods: "GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE",
+            origin: "*",
+            preflightContinue: false
+        };
+
+        router.use(cors(options));
+
         // placeholder route handler
         this.express.use('/', router);
 
         this.express.use('/v1/tenants', this.tenantRouter.getRouter());
         this.express.use('/v1/tenants', this.applicationRouter.getRouter());
 
+        //enable pre-flight
+        router.options("*", cors(options));
     }
 
     private injectDependencies(): void {
