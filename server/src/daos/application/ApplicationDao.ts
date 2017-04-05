@@ -1,7 +1,7 @@
 import {Application} from "../../domain/Application";
-import {ITenantModel} from "../../db/mongo/tenant/TenantModel";
+import {Tenant} from "../../domain/Tenant";
 
 export interface ApplicationDao {
-    save(tenantId: ITenantModel, application: Application, callback: (error: Error, application?: Application) => void): void
+    save(tenantId: Tenant, application: Application, callback: (error: Error, application?: Application) => void): void
 }
 

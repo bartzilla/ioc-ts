@@ -1,8 +1,9 @@
-import {Schema, Model, model} from "mongoose";
+import {Document, Schema, Model, model} from "mongoose";
 import {Application} from "../../../domain/Application";
+import {ITenantModel} from "../tenant/TenantModel";
 
 export interface IApplicationModel extends Application, Document {
-    createApplication(tenant, newApplication: IApplicationModel, callback): void;
+    createApplication(tenant, newApplication: IApplicationModel, callback: (err: Error | undefined, application?: IApplicationModel) => void): void;
 }
 
 export var ApplicationSchema: Schema = new Schema({
@@ -24,7 +25,7 @@ export var ApplicationSchema: Schema = new Schema({
     }]
 }, {versionKey: false});
 
-ApplicationSchema.methods.createApplication = function(tenant, newApplication, callback: (err: Error | undefined, application?: IApplicationModel) => void): void{
+ApplicationSchema.methods.createApplication = function(tenant: ITenantModel, newApplication: IApplicationModel, callback: (err: Error | undefined, application?: IApplicationModel) => void): void{
 
     newApplication.save(function (err) {
         if (err) return callback(undefined);
@@ -37,4 +38,4 @@ ApplicationSchema.methods.createApplication = function(tenant, newApplication, c
 
 };
 
-export const ApplicationModel: Model<any> = model<any>("Application", ApplicationSchema);
+export const ApplicationModel: Model<IApplicationModel> = model<IApplicationModel>("Application", ApplicationSchema);

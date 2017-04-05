@@ -4,7 +4,6 @@ import "reflect-metadata";
 import {injectable, inject} from "inversify";
 import DAO_TYPES from "../daos/types/dao-types";
 import {TenantDao} from "../daos/tenant/TenantDao";
-import {ITenantModel} from "../db/mongo/tenant/TenantModel";
 
 @injectable()
 export class TenantRouter {
@@ -29,7 +28,7 @@ export class TenantRouter {
         this.router.get('/:email', this.getTenantsByEmail);
     }
 
-    public addTenant = (req: Request, res: Response, next: NextFunction) =>  {
+    private addTenant = (req: Request, res: Response, next: NextFunction) =>  {
 
         if(req.body.email && req.body.email.length >= 0
             && req.body.tenantName && req.body.tenantName.length >= 0
@@ -56,10 +55,10 @@ export class TenantRouter {
         }
     };
 
-    public getTenantsByEmail = (req: Request, res: Response, next: NextFunction) => {
+    private getTenantsByEmail = (req: Request, res: Response, next: NextFunction) => {
         let email = req.params.email;
 
-        this.tenantDao.getTenantsByEmail(email, (daoErr: Error, daoTenants: ITenantModel[]) => {
+        this.tenantDao.getTenantsByEmail(email, (daoErr: Error, daoTenants: Tenant[]) => {
 
             if(daoErr) {
                 console.log('[TENANT]: ERROR: Could not find tenant.', daoErr);

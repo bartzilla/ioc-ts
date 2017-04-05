@@ -3,9 +3,9 @@ import * as bcrypt from "bcrypt";
 import {Tenant} from "../../../domain/Tenant";
 
 export interface ITenantModel extends Tenant, Document {
-    createTenant(newTenant, callback): void;
-    findById(tenantId, callback): void;
-    findTenantsByEmail(email: string, callback): void;
+    createTenant(newTenant: ITenantModel, callback: (err: Error | undefined, tenant?: ITenantModel) => void): void;
+    findById(tenantId: string, callback:(err: Error | undefined, tenant?: ITenantModel) => void): void;
+    findTenantsByEmail(email: string, callback:(err: Error | undefined, tenant?: ITenantModel[]) => void): void;
 }
 
 export var TenantSchema: Schema = new Schema({
@@ -64,36 +64,16 @@ TenantSchema.methods.findById = function(tenantId: string, callback: (err: Error
         }
     );
 
-    // TenantModel.findOne({_id: tenantId},
-    //     function(dbErr, dbRes){
-    //
-    //         if (dbErr) return callback(undefined);
-    //
-    //         let app = new ApplicationModel();
-    //         app._name = "TEST-APPLICATION";
-    //
-    //         app.save(function (err) {
-    //             if (err) return callback(undefined);
-    //
-    //             dbRes._applications.push(app._id);
-    //             dbRes.save();
-    //
-    //             return callback(undefined, dbRes);
-    //         });
-    //     }
-    // );
-
 };
 
+TenantSchema.methods.findTenantsByEmail = function(email: string, callback: (err: Error | undefined, tenant?: ITenantModel[]) => void): void{
 
-TenantSchema.methods.findTenantsByEmail = function(email: string, callback: (err: Error | undefined, tenant?: Tenant) => void): void{
-
-    TenantModel.find({adminEmail: email}).lean()
+    TenantModel.find({adminEmail: email})
         .populate("applications")
         .exec(function(dbErr, dbRes){
             if (dbErr) return callback(undefined);
 
-            return callback(undefined, <Tenant> dbRes);
+            return callback(undefined, dbRes);
     });
 };
 
