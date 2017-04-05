@@ -1,21 +1,24 @@
 import {Router, Request, Response, NextFunction} from 'express';
-import {ApplicationService} from "../services/application/ApplicationService";
 import {Application} from "../domain/Application";
 import "reflect-metadata";
 import {injectable, inject} from "inversify";
-import TYPES from "../services/types/service-types";
-import {Account} from "../domain/Account";
+import DAO_TYPES from "../daos/types/dao-types";
+import {ApplicationDao} from "../daos/application/ApplicationDao";
+import {TenantDao} from "../daos/tenant/TenantDao";
 
 @injectable()
 export class ApplicationRouter {
-    private applicationService: ApplicationService;
+    private applicationDao: ApplicationDao;
+    private tenantDao: TenantDao;
     private router: Router;
 
     /**
      * Initialize the ApplicationRouter
      */
-    public constructor(@inject(TYPES.ApplicationService) applicationService?: ApplicationService) {
-        this.applicationService = applicationService;
+    public constructor(@inject(DAO_TYPES.ApplicationDao) applicationDao: ApplicationDao,
+                       @inject(DAO_TYPES.TenantDao) tenantDao: TenantDao) {
+        this.applicationDao = applicationDao;
+        this.tenantDao = tenantDao;
         this.router = Router();
         this.init();
     }
@@ -34,15 +37,24 @@ export class ApplicationRouter {
 
         if(req.body.applicationName && req.body.applicationName.length >= 0) {
 
-            // Create Application
-            let newApplication = new Application( "sable-sun");
-            this.applicationService.registerNewApplication(tenantId, newApplication, (err: Error, application: Application) => {
-                if(err) {
-                    console.log('[APPLICATION]: ERROR: Could not add application.', err);
+            this.tenantDao.getTenantById(tenantId, (tenantDaoErr: Error, daoTenant) => {
+                if(tenantDaoErr) {
+                    console.log('[APPLICATION]: ERROR: Could not add application.', tenantDaoErr);
                     return res.status(500).json({success: false, message: 'Error adding application.'});
-                }
-                else {
-                    return res.status(200).json(application);
+                } else {
+
+                    // Create Application
+                    let newApplication = new Application(req.body.applicationName);
+
+                    this.applicationDao.save(daoTenant, newApplication, (applicationDaoErr: Error, daoApplication: Application) => {
+                        if(applicationDaoErr) {
+                            console.log('[APPLICATION]: ERROR: Could not add application.', applicationDaoErr);
+                            return res.status(500).json({success: false, message: 'Error adding application.'});
+                        }
+                        else {
+                            return res.status(200).json(daoApplication);
+                        }
+                    })
                 }
             });
         }else {

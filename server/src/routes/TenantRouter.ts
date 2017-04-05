@@ -1,20 +1,21 @@
-import {Router, Request, Response, NextFunction} from 'express';
-import {TenantService} from "../services/tenant/TenantService";
+import {Router, Request, Response, NextFunction} from "express";
 import {Tenant} from "../domain/Tenant";
 import "reflect-metadata";
 import {injectable, inject} from "inversify";
-import TYPES from "../services/types/service-types";
+import DAO_TYPES from "../daos/types/dao-types";
+import {TenantDao} from "../daos/tenant/TenantDao";
+import {ITenantModel} from "../db/mongo/tenant/TenantModel";
 
 @injectable()
 export class TenantRouter {
-    private tenantService: TenantService;
+    private tenantDao: TenantDao;
     private router: Router;
 
     /**
      * Initialize the TenantRouter
      */
-    public constructor(@inject(TYPES.TenantService) tenantService?: TenantService) {
-        this.tenantService = tenantService;
+    public constructor(@inject(DAO_TYPES.TenantDao) tenantDao?: TenantDao) {
+        this.tenantDao = tenantDao;
         this.router = Router();
         this.init();
     }
@@ -24,8 +25,8 @@ export class TenantRouter {
      * endpoints.
      */
     init() {
-        // this.router.post('/', this.addTenant);
         this.router.post('/', this.addTenant);
+        this.router.get('/:email', this.getTenantsByEmail);
     }
 
     public addTenant = (req: Request, res: Response, next: NextFunction) =>  {
@@ -40,18 +41,33 @@ export class TenantRouter {
 
             let newTenant = new Tenant(tenantName, adminEmail, adminPassword);
 
-            this.tenantService.registerNewTenant(newTenant, function(err, tenant){
-                if(err) {
-                    console.log('[TENANTS]: ERROR: Could not add tenant.', err);
+            this.tenantDao.save(newTenant, (daoErr: Error, daoTenant: Tenant) => {
+
+                if(daoErr) {
+                    console.log('[TENANTS]: ERROR: Could not add tenant.', daoErr);
                     return res.status(500).json({success: false, message: 'Error adding tenant.'});
                 }
-                else {
-                    return res.status(200).json(tenant);
-                }
+
+                return res.status(200).json(daoTenant);
             });
-        }else {
+
+        } else {
             return res.status(400).json({success: false, message: 'Required parameters "email" and "password" must be specified'});
         }
+    };
+
+    public getTenantsByEmail = (req: Request, res: Response, next: NextFunction) => {
+        let email = req.params.email;
+
+        this.tenantDao.getTenantsByEmail(email, (daoErr: Error, daoTenants: ITenantModel[]) => {
+
+            if(daoErr) {
+                console.log('[TENANT]: ERROR: Could not find tenant.', daoErr);
+                return res.status(500).json({success: false, message: 'Error while finding tenants by email.'});
+            }
+
+            return res.status(200).json(daoTenants);
+        });
     };
 
     public getRouter(): Router {

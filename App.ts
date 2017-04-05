@@ -2,11 +2,11 @@ import * as express from 'express';
 import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
 import {TenantRouter} from "./server/src/routes/TenantRouter";
-import {TenantService} from "./server/src/services/tenant/TenantService";
 import container from "./server/src/config/inversify.config";
-import SERVICE_TYPES from "./server/src/services/types/service-types";
+import DAO_TYPES from "./server/src/daos/types/dao-types";
 import {ApplicationRouter} from "./server/src/routes/ApplicationRouter";
-import {ApplicationService} from "./server/src/services/application/ApplicationService";
+import {TenantDao} from "./server/src/daos/tenant/TenantDao";
+import {ApplicationDao} from "./server/src/daos/application/ApplicationDao";
 
 // Creates and configures an ExpressJS web server.
 class App {
@@ -44,11 +44,11 @@ class App {
     }
 
     private injectDependencies(): void {
-        let tenantService = container.get<TenantService>(SERVICE_TYPES.TenantService);
-        let applicationService = container.get<ApplicationService>(SERVICE_TYPES.ApplicationService);
+        let tenantDao = container.get<TenantDao>(DAO_TYPES.TenantDao);
+        let applicationDao = container.get<ApplicationDao>(DAO_TYPES.ApplicationDao);
 
-        this.tenantRouter = new TenantRouter(tenantService);
-        this.applicationRouter = new ApplicationRouter(applicationService);
+        this.tenantRouter = new TenantRouter(tenantDao);
+        this.applicationRouter = new ApplicationRouter(applicationDao, tenantDao);
     }
 
 }

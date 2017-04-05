@@ -8,9 +8,9 @@ export class Tenant {
 
     constructor(tenantName: string, adminEmail: string, adminPassword: string) {
 
-        this._tenantName = tenantName;
-        this._adminEmail = adminEmail;
-        this._adminPassword = adminPassword;
+        this.tenantName = tenantName;
+        this.adminEmail = adminEmail;
+        this.adminPassword = adminPassword;
     }
 
     get tenantName(): string {

@@ -1,52 +1,52 @@
 import { Document, Schema, Model, model} from "mongoose";
-import {ITenant} from "../ITenant";
 import * as bcrypt from "bcrypt";
-import {ApplicationModel} from "../../application/impl/ApplicationModel";
+import {Tenant} from "../../../domain/Tenant";
 
-export interface ITenantModel extends ITenant, Document {
+export interface ITenantModel extends Tenant, Document {
     createTenant(newTenant, callback): void;
     findById(tenantId, callback): void;
+    findTenantsByEmail(email: string, callback): void;
 }
 
 export var TenantSchema: Schema = new Schema({
-    _tenantName: {
+    tenantName: {
         type: String,
         unique: true,
         required: true
     },
-    _adminEmail: {
+    adminEmail: {
         type: String,
         lowercase: true,
         unique: true,
         required: true
     },
-    _adminPassword: {
+    adminPassword: {
         type: String,
         required: true
     },
-    _role: {
+    role: {
         type: String,
         enum: ['Client', 'Manager', 'Admin'],
         default: 'Client'
     },
-    _applications:[{type: Schema.Types.ObjectId, ref: 'Application'}]
-});
+    applications:[{type: Schema.Types.ObjectId, ref: 'Application'}]
+}, {versionKey: false});
 
 TenantSchema.methods.createTenant = function(newTenant: ITenantModel, callback: (err: Error | undefined, tenant?: ITenantModel) => void): void{
     bcrypt.genSalt(10, (err, salt) => {
 
         if(err) {
-            console.log('[CREATE-TENANT] Error while while generating the salt for passowrd', err);
+            console.log('[CREATE-TENANT] Error while while generating the salt for password', err);
             return callback(err);
         }
 
-        bcrypt.hash(newTenant._adminPassword, salt, (err, hash) => {
+        bcrypt.hash(newTenant.adminPassword, salt, (err, hash) => {
 
             if(err) {
-                console.log('[CREATE-TENANT] Error while while hashing passowrd', err);
+                console.log('[CREATE-TENANT] Error while while hashing password', err);
                 return callback(err);
             }
-            newTenant._adminPassword = hash;
+            newTenant.adminPassword = hash;
             newTenant.save();
 
             return callback(undefined, newTenant);
@@ -83,6 +83,18 @@ TenantSchema.methods.findById = function(tenantId: string, callback: (err: Error
     //     }
     // );
 
+};
+
+
+TenantSchema.methods.findTenantsByEmail = function(email: string, callback: (err: Error | undefined, tenant?: Tenant) => void): void{
+
+    TenantModel.find({adminEmail: email}).lean()
+        .populate("applications")
+        .exec(function(dbErr, dbRes){
+            if (dbErr) return callback(undefined);
+
+            return callback(undefined, <Tenant> dbRes);
+    });
 };
 
 export const TenantModel: Model<ITenantModel> = model<ITenantModel>("Tenant", TenantSchema);
