@@ -7,4 +7,6 @@ export interface TenantDao {
     getTenantById(tenantId: string, callback: (error: Error, tenant?: Tenant) => void): void
 
     getTenantsByEmail(email: string, callback: (error: Error, tenants?: Tenant[]) => void): void
+
+    authenticate(email: string, candidatePassword: string, callback: (error: Error, token?: string) => void): void
 }

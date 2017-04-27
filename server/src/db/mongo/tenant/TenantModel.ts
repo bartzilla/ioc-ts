@@ -6,6 +6,7 @@ export interface ITenantModel extends Tenant, Document {
     createTenant(newTenant: ITenantModel, callback: (err: Error | undefined, tenant?: ITenantModel) => void): void;
     findById(tenantId: string, callback:(err: Error | undefined, tenant?: ITenantModel) => void): void;
     findTenantsByEmail(email: string, callback:(err: Error | undefined, tenant?: ITenantModel[]) => void): void;
+    comparePasswords(candidatePassword: string, hash: string, callback:(err: Error | undefined, tenant?: ITenantModel[]) => void): void;
 }
 
 export var TenantSchema: Schema = new Schema({
@@ -74,6 +75,13 @@ TenantSchema.methods.findTenantsByEmail = function(email: string, callback: (err
             if (dbErr) return callback(undefined);
 
             return callback(undefined, dbRes);
+    });
+};
+
+TenantSchema.methods.comparePasswords =  function(candidatePassword: string, hash: string , callback: (err: Error | undefined, tenant?: ITenantModel[]) => void): void{
+    bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
+        if(err) throw err;
+        callback(null, isMatch);
     });
 };
 

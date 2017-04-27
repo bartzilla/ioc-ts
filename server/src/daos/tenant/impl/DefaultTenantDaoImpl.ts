@@ -2,7 +2,9 @@ import {TenantDao} from "../TenantDao";
 import {Tenant} from "../../../domain/Tenant";
 import {injectable} from "inversify";
 import "reflect-metadata";
-import {TenantModel} from "../../../db/mongo/tenant/TenantModel"
+import * as jwt from "jsonwebtoken";
+import {TenantModel, ITenantModel} from "../../../db/mongo/tenant/TenantModel"
+import {Config} from "../../../config/Config";
 
 @injectable()
 export class DefaultTenantDaoImpl implements TenantDao {
@@ -48,6 +50,38 @@ export class DefaultTenantDaoImpl implements TenantDao {
             else {
                 console.log('Tenant successfully retrieved: ', tenants);
                 return callback(null, tenants);
+            }
+        });
+    }
+
+    authenticate(email: string, candidatePassword: string, callback: (error: Error, token?: string)=>void): void {
+
+        var newTenant = new TenantModel();
+
+        newTenant.findTenantsByEmail(email, (err: Error, tenants: ITenantModel[]) => {
+            if(err) {
+                throw err;
+            }
+            else {
+                if (tenants.length > 0) {
+
+                    // At the moment we only support one tenant per user, so we try to authenticate tenant
+                    // in position zero
+                    tenants[0].comparePasswords(candidatePassword, tenants[0].adminPassword, (err, isMatch) => {
+                        if(err) throw err;
+                        if (isMatch && !err) {
+                            // Create token if the password matched and no error was thrown
+                            var token = jwt.sign(tenants[0], Config.secret, {
+                                expiresIn: 3600 // in seconds. represents 1 hour
+                            });
+                            return callback(null, token);
+                        } else {
+                            return callback(null);
+                        }
+                    })
+                } else {
+                    return callback(null);
+                }
             }
         });
     }
