@@ -1,5 +1,5 @@
 import { Document, Schema, Model, model} from "mongoose";
-import * as bcrypt from "bcrypt";
+import * as bcrypt from "bcryptjs";
 import {Tenant} from "../../../domain/Tenant";
 
 export interface ITenantModel extends Tenant, Document {

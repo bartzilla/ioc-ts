@@ -1,25 +1,35 @@
 import * as mongoose from "mongoose";
-import * as passportJwt from 'passport-jwt'
-var JwtStrategy = require('passport-jwt').Strategy;
-var User = require('../db/mongo/tenant/TenantModel');
+import {TenantDao} from "../daos/tenant/TenantDao";
+import DAO_TYPES from "../daos/types/dao-types";
+import passport = require("passport");
+import {inject, injectable} from "inversify";
+import "reflect-metadata";
+import {ExtractJwt} from 'passport-jwt';
+import {Strategy as JwtStrategy} from 'passport-jwt';
 
+@injectable()
 export class Config {
 
-    public static secret: String = 'putsomethingtopsecrethere';
+    public static secret: string = process.env.DOORMAN_SECRET;
+    private static db_url: string = process.env.DOORMAN_DB_URL;
+    private tenantDao: TenantDao;
 
-    public static connectMongo(): void {
-        mongoose.connect('mongodb://localhost/ioc-ts');
+    public constructor(@inject(DAO_TYPES.TenantDao) tenantDao: TenantDao) {
+        this.tenantDao = tenantDao;
     }
 
-    public static configPassport(passport) {
-        var opts = <any>{};
-        opts.jwtFromRequest = passportJwt.ExtractJwt.fromAuthHeader();
-        opts.secretOrKey = "putsomethingsecrethere";
-        console.log("DO STUFF", passport);
-        passport.use(new JwtStrategy(opts, function (jwt_payload, done) {
+    public static connectMongo(): void {
+        mongoose.connect(Config.db_url);
+    }
 
-            User.findById({id: jwt_payload.id}, function (err, user) {
-                console.log('Well there was an error', err);
+    public configPassport(): void {
+
+        var opts = <any>{};
+        opts.jwtFromRequest = ExtractJwt.fromAuthHeader();
+        opts.secretOrKey = Config.secret;
+
+        passport.use(new JwtStrategy(opts, (jwt_payload, done) => {
+            this.tenantDao.getTenantById(jwt_payload._doc._id, function (err, user) {
                 if (err) {
                     return done(err, false);
                 }

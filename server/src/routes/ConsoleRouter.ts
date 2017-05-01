@@ -27,9 +27,10 @@ export class ConsoleRouter {
      */
     private init() {
         this.router.post('/authenticate', this.authenticate);
-        console.log("Same Passport: ", passport);
-        this.router.get('/dashboard', passport.authenticate('jwt', { session: false }), function(req, res) {
-            return res.json(req.user);
+        this.router.get('/dashboard', passport.authenticate('jwt', {session: false}), (req, res) => {
+
+            res.json('It worked: User ID is: ' + req.user._id);
+
         });
     }
 

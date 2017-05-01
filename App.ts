@@ -2,7 +2,7 @@ import * as express from 'express';
 import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
 import * as cors from "cors";
-import * as passport from "passport";
+
 import {TenantRouter} from "./server/src/routes/TenantRouter";
 import container from "./server/src/config/inversify.config";
 import DAO_TYPES from "./server/src/daos/types/dao-types";
@@ -11,10 +11,7 @@ import {TenantDao} from "./server/src/daos/tenant/TenantDao";
 import {ApplicationDao} from "./server/src/daos/application/ApplicationDao";
 import {ConsoleRouter} from "./server/src/routes/ConsoleRouter";
 import {Config} from "./server/src/config/Config";
-import * as mongoose from "mongoose";
-var ExtractJwt = require('passport-jwt').ExtractJwt;
-var JwtStrategy = require('passport-jwt').Strategy;
-var User = require('./server/src/db/mongo/tenant/TenantModel');
+var passport = require('passport');
 var TenantModel = require('./server/src/db/mongo/tenant/TenantModel');
 
 
@@ -23,7 +20,7 @@ class App {
 
     // ref to Express instance
     public express: express.Application;
-    public passport: any;
+    private config: Config;
     private tenantRouter: TenantRouter;
     private applicationRouter: ApplicationRouter;
     private consoleRouter: ConsoleRouter;
@@ -41,34 +38,6 @@ class App {
         this.express.use(logger('dev'));
         this.express.use(bodyParser.json());
         this.express.use(bodyParser.urlencoded({ extended: false }));
-
-        // Bring in passport strategy we just defined
-        // require('./server/src/config/passport')(passport);
-
-        console.log("SECOND");
-        // Initialize passport for use
-        this.express.use(passport.initialize());
-
-
-        var opts = <any>{};
-        opts.jwtFromRequest = ExtractJwt.fromAuthHeader();
-        opts.secretOrKey = "putsomethingsecrethere";
-
-        this.passport.use(new JwtStrategy(opts, function (jwt_payload, done) {
-            console.log('ID: ', jwt_payload.id);
-            User.findById({id: jwt_payload.id}, function (err, user) {
-
-                if (err) {
-                    return done(err, false);
-                }
-                if (user) {
-                    done(null, user);
-                } else {
-                    done(null, false);
-                }
-            });
-        }));
-        console.log('Well Strategy', passport);
     }
 
     // Configure API endpoints.
@@ -86,6 +55,10 @@ class App {
         };
 
         router.use(cors(options));
+
+        // Initialize passport for use
+        this.express.use(passport.initialize());
+        this.config.configPassport();
 
         // placeholder route handler
         this.express.use('/', router);
@@ -105,6 +78,7 @@ class App {
         let tenantDao = container.get<TenantDao>(DAO_TYPES.TenantDao);
         let applicationDao = container.get<ApplicationDao>(DAO_TYPES.ApplicationDao);
 
+        this.config = new Config(tenantDao);
         this.tenantRouter = new TenantRouter(tenantDao);
         this.applicationRouter = new ApplicationRouter(applicationDao, tenantDao);
         this.consoleRouter = new ConsoleRouter(tenantDao);
