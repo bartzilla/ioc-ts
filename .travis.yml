@@ -1,11 +1,10 @@
 language: node_js
 node_js:
-  - "stable"
-  - "6"
+- stable
+- '6'
 after_success: npm run coverage
 deploy:
   provider: heroku
   api_key:
-    secure: "60020f9f-0e7a-4271-aa3b-89c7ccc5cad5"
+    secure: I7PxrcLmiZEIMxQEQzEfclBgx3t3325vSKHSGW+DSsmzQ71u1ZatipJEE1/+kTKuGwsNQUiPgkX2QgirWk8mk3SUmFR0yNpf57AjVWoD1nSY7mXMK1Jmvl+60m0Dyx9JefM4J533kfyUPL+PWcvKN/danv/AA2kz83qkLLg0scjPLT8bph3PryUiB+qzK5iu6F+aBWAEKYcF7xs84Xx6UbQnXDhUtsShAVdEEgYlV8nzIaIuefN2q42+8crpCDVDY6s+vyFe2qTjasKEgUTY3P0UEHk0mRJ3ymIYch9Aeysj90qp+Pu+79e/z+sjBPUp4zhF27ssE3rtpeNQ/RhZxdwTKPyKTRgpCz6DR4irKBLa+TvluRfJMKDNvbD9hTo3TNLbX8kvC1UdaYd5L59dppx+v8a+t0Bsp3cMe/HT5mC9zB3tH3s4gR+A9IDXSmf2Er8v1yMi+qP664+wp3lLMn0oZf8sPqigzyMHacmEz99bIgaT0NH3InRWEkPngrgxSZCLuqVNOJ6tfezKPujZvrEfzNTZ+qxUgJDwWXQiSqBSeykVifqrJpbS29HDQ1fpEveU0b7YSV4EEl6UaCWg1xMR7rZ1MozFmwTy9yyD78qh+KwjNy7SPhuP1vLcRz0Pcj9pt+gOoeRY/vgQiU9E+NPxLMoJTr/uesPJwOF1teE=
     app: protected-peak-77282
-
