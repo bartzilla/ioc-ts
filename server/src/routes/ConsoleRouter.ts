@@ -27,11 +27,12 @@ export class ConsoleRouter {
      */
     private init() {
         this.router.post('/authenticate', this.authenticate);
+        this.router.get('/logout', this.logout);
+
         this.router.get('/dashboard', passport.authenticate('jwt', {session: false}), (req, res) => {
-
-            res.json('It worked: User ID is: ' + req.user._id);
-
+            return res.json(req.user);
         });
+
     }
 
     private authenticate = (req: Request, res: Response, next: NextFunction) =>  {
@@ -46,6 +47,11 @@ export class ConsoleRouter {
                 return res.status(200).json({ success: true, token: 'JWT ' + token });
             }
         });
+    };
+
+    private logout = (req: Request, res: Response, next: NextFunction) => {
+        req.logout();
+        return res.status(200).json({message: 'User logged out'});
     };
 
     private login = (req: Request, res: Response, next: NextFunction) =>  {
