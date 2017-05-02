@@ -4,6 +4,7 @@
   "description": "This is IoC demo using TypeScript",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "nyc mocha server/test/**/*.ts",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
