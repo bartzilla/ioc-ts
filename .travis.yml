@@ -3,3 +3,9 @@ node_js:
   - "stable"
   - "6"
 after_success: npm run coverage
+deploy:
+  provider: heroku
+  api_key:
+    secure: "60020f9f-0e7a-4271-aa3b-89c7ccc5cad5"
+    app: protected-peak-77282
+
