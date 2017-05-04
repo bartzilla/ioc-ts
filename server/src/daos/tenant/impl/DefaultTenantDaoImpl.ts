@@ -71,7 +71,13 @@ export class DefaultTenantDaoImpl implements TenantDao {
                         if(err) throw err;
                         if (isMatch && !err) {
                             // Create token if the password matched and no error was thrown
-                            var token = jwt.sign(tenants[0], Config.secret, {
+                            let payload = {
+                                adminEmail: tenants[0].adminEmail,
+                                tenantName: tenants[0].tenantName,
+                                tenantId: tenants[0]._id
+                            };
+
+                            var token = jwt.sign(payload, Config.secret, {
                                 expiresIn: 3600 // in seconds. represents 1 hour
                             });
                             return callback(null, token);
