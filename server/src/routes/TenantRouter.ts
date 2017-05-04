@@ -30,12 +30,12 @@ export class TenantRouter {
 
     private addTenant = (req: Request, res: Response, next: NextFunction) =>  {
 
-        if(req.body.email && req.body.email.length >= 0
+        if(req.body.adminEmail && req.body.adminEmail.length >= 0
             && req.body.tenantName && req.body.tenantName.length >= 0
             && req.body.password && req.body.password.length >= 0){
 
             let tenantName = req.body.tenantName;
-            let adminEmail = req.body.email;
+            let adminEmail = req.body.adminEmail;
             let adminPassword = req.body.password;
 
             let newTenant = new Tenant(tenantName, adminEmail, adminPassword);
