@@ -71,9 +71,11 @@ export class DefaultTenantDaoImpl implements TenantDao {
                         if(err) throw err;
                         if (isMatch && !err) {
                             // Create token if the password matched and no error was thrown
+                            console.log(tenants[0]._id);
                             let payload = {
                                 adminEmail: tenants[0].adminEmail,
                                 tenantName: tenants[0].tenantName,
+                                numberOfApps: tenants[0].applications.length,
                                 tenantId: tenants[0]._id
                             };
 

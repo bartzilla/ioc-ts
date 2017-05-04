@@ -29,7 +29,7 @@ export class Config {
         opts.secretOrKey = Config.secret;
 
         passport.use(new JwtStrategy(opts, (jwt_payload, done) => {
-            this.tenantDao.getTenantById(jwt_payload._doc._id, function (err, user) {
+            this.tenantDao.getTenantById(jwt_payload.tenantId, function (err, user) {
                 if (err) {
                     return done(err, false);
                 }

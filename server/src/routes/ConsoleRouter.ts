@@ -41,7 +41,6 @@ export class ConsoleRouter {
             if(err) {
                 throw err;
             }else if(typeof token === 'undefined' || token === null){
-                console.log('This is the token ', token);
                 return res.status(401).json({success: false, message: 'Authentication failed: Invalid credentials.'});
             } else {
                 return res.status(200).json({ success: true, token: 'JWT ' + token });
