@@ -9,6 +9,10 @@
     "test": "nyc mocha server/test/**/*.ts",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
+  "engines": {
+    "node": "6.9.1",
+    "npm": "4.0.2"
+  },
   "author": "Cipriano",
   "license": "ISC",
   "dependencies": {
