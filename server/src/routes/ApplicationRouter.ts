@@ -5,6 +5,7 @@ import {injectable, inject} from "inversify";
 import DAO_TYPES from "../daos/types/dao-types";
 import {ApplicationDao} from "../daos/application/ApplicationDao";
 import {TenantDao} from "../daos/tenant/TenantDao";
+import passport = require("passport");
 
 @injectable()
 export class ApplicationRouter {
@@ -28,8 +29,13 @@ export class ApplicationRouter {
      * endpoints.
      */
     private init() {
-        this.router.post('/:tenantId/applications', this.addApplication);
+        this.router.post('/:tenantId/applications', passport.authenticate('jwt', {session: false}), this.addApplication);
+        this.router.get('/:tenantId/applications', passport.authenticate('jwt', {session: false}), this.getApplications);
     }
+
+    private getApplications = (req: Request, res: Response, next: NextFunction) =>  {
+        return res.status(200).json({message: "Retrieve applications all applications for tenant "});
+    };
 
     private addApplication = (req: Request, res: Response, next: NextFunction) =>  {
 

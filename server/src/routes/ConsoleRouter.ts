@@ -33,6 +33,10 @@ export class ConsoleRouter {
             return res.json(req.user);
         });
 
+        this.router.get('/applications', passport.authenticate('jwt', {session: false}), (req, res) => {
+            return res.json(req.user);
+        });
+
     }
 
     private authenticate = (req: Request, res: Response, next: NextFunction) =>  {
