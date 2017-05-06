@@ -3,6 +3,7 @@ import {Application} from "../../../domain/Application";
 import {injectable} from "inversify";
 import "reflect-metadata";
 import {ApplicationModel} from "../../../db/mongo/application/ApplicationModel";
+import {TenantModel, ITenantModel} from "../../../db/mongo/tenant/TenantModel"
 import {Tenant} from "../../../domain/Tenant";
 
 @injectable()
@@ -18,6 +19,22 @@ export class DefaultApplicationDaoImpl implements ApplicationDao{
             else {
                 console.log('Application successfully created: ', application);
                 return callback(null, application);
+            }
+        });
+    }
+
+    getAllApplicationsForTenant(tenantId: string, callback: (err: Error, applications?: Application[])=>void): void {
+        var newTenant = new TenantModel();
+
+        newTenant.findById(tenantId, (err: Error, tenant: Tenant) => {
+            if(err) {
+                throw err;
+            }
+            else {
+                // check if tenant has no apps. Undefined or null
+                if (tenant == null) return callback(null, []);
+
+                return callback(null, tenant.applications);
             }
         });
     }

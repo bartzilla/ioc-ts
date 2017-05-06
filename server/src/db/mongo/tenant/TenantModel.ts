@@ -57,13 +57,21 @@ TenantSchema.methods.createTenant = function(newTenant: ITenantModel, callback: 
 
 TenantSchema.methods.findById = function(tenantId: string, callback: (err: Error | undefined, tenant?: ITenantModel) => void): void{
 
-    TenantModel.findOne({_id: tenantId},
-        function(dbErr, dbRes){
+    // TenantModel.findOne({_id: tenantId},
+    //     function(dbErr, dbRes){
+    //         if (dbErr) return callback(undefined);
+    //
+    //         return callback(undefined, dbRes);
+    //     }
+    // );
+
+    TenantModel.findOne({_id: tenantId})
+        .populate("applications")
+        .exec(function(dbErr, dbRes){
             if (dbErr) return callback(undefined);
 
             return callback(undefined, dbRes);
-        }
-    );
+        });
 
 };
 

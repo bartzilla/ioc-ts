@@ -30,14 +30,24 @@ export class ApplicationRouter {
      */
     private init() {
         this.router.post('/:tenantId/applications', passport.authenticate('jwt', {session: false}), this.addApplication);
-        this.router.get('/:tenantId/applications', passport.authenticate('jwt', {session: false}), this.getApplications);
+        this.router.get('/:tenantId/applications', passport.authenticate('jwt', {session: false}), this.getAllApplications);
     }
 
-    private getApplications = (req: Request, res: Response, next: NextFunction) =>  {
-        return res.status(200).json({message: "Retrieve applications all applications for tenant "});
+    private getAllApplications = (req: Request, res: Response) =>  {
+        let tenantId = req.params.tenantId;
+
+        this.applicationDao.getAllApplicationsForTenant(tenantId, (applicationsDaoErr: Error, daoApplications: Application[]) => {
+
+            if(applicationsDaoErr) {
+                console.log('[APPLICATION]: ERROR: Could not retrieve applications for tenant.', applicationsDaoErr);
+                return res.status(500).json({success: false, message: 'Error retrieving applications for tenant.'});
+            }
+
+            return res.status(200).json(daoApplications);
+        });
     };
 
-    private addApplication = (req: Request, res: Response, next: NextFunction) =>  {
+    private addApplication = (req: Request, res: Response) =>  {
 
         let tenantId = req.params.tenantId;
 
@@ -47,21 +57,20 @@ export class ApplicationRouter {
                 if(tenantDaoErr) {
                     console.log('[APPLICATION]: ERROR: Could not add application.', tenantDaoErr);
                     return res.status(500).json({success: false, message: 'Error adding application.'});
-                } else {
-
-                    // Create Application
-                    let newApplication = new Application(req.body.applicationName);
-
-                    this.applicationDao.save(daoTenant, newApplication, (applicationDaoErr: Error, daoApplication: Application) => {
-                        if(applicationDaoErr) {
-                            console.log('[APPLICATION]: ERROR: Could not add application.', applicationDaoErr);
-                            return res.status(500).json({success: false, message: 'Error adding application.'});
-                        }
-                        else {
-                            return res.status(200).json(daoApplication);
-                        }
-                    })
                 }
+
+                // Create Application
+                let newApplication = new Application(req.body.applicationName);
+
+                this.applicationDao.save(daoTenant, newApplication, (applicationDaoErr: Error, daoApplication: Application) => {
+                    if(applicationDaoErr) {
+                        console.log('[APPLICATION]: ERROR: Could not add application.', applicationDaoErr);
+                        return res.status(500).json({success: false, message: 'Error adding application.'});
+                    }
+                    else {
+                        return res.status(200).json(daoApplication);
+                    }
+                })
             });
         }else {
             return res.status(400).json({success: false, message: 'Required parameters "applicationName" must be specified'});
