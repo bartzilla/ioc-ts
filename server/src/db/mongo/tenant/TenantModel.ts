@@ -4,8 +4,8 @@ import {Tenant} from "../../../domain/Tenant";
 
 export interface ITenantModel extends Tenant, Document {
     createTenant(newTenant: ITenantModel, callback: (err: Error | undefined, tenant?: ITenantModel) => void): void;
-    findById(tenantId: string, callback:(err: Error | undefined, tenant?: ITenantModel) => void): void;
-    findTenantsByEmail(email: string, callback:(err: Error | undefined, tenant?: ITenantModel[]) => void): void;
+    findTenantById(tenantId: string, callback:(err: Error | undefined, tenant?: ITenantModel) => void, populateRefs?: boolean): void;
+    findTenantsByEmail(email: string, callback:(err: Error | undefined, tenant?: ITenantModel[]) => void, populateRefs?: boolean): void;
     comparePasswords(candidatePassword: string, hash: string, callback:(err: Error | undefined, tenant?: ITenantModel[]) => void): void;
 }
 
@@ -55,35 +55,44 @@ TenantSchema.methods.createTenant = function(newTenant: ITenantModel, callback: 
     });
 };
 
-TenantSchema.methods.findById = function(tenantId: string, callback: (err: Error | undefined, tenant?: ITenantModel) => void): void{
+TenantSchema.methods.findTenantById = function(tenantId: string, callback: (err: Error | undefined, tenant?: ITenantModel) => void, populateRefs?: boolean): void{
 
-    // TenantModel.findOne({_id: tenantId},
-    //     function(dbErr, dbRes){
-    //         if (dbErr) return callback(undefined);
-    //
-    //         return callback(undefined, dbRes);
-    //     }
-    // );
+    if(populateRefs === true){
+        TenantModel.findOne({_id: tenantId})
+            .populate("applications")
+            .exec(function(dbErr, dbRes){
+                if (dbErr) return callback(undefined);
 
-    TenantModel.findOne({_id: tenantId})
-        .populate("applications")
-        .exec(function(dbErr, dbRes){
-            if (dbErr) return callback(undefined);
-
-            return callback(undefined, dbRes);
-        });
-
+                return callback(undefined, dbRes);
+            });
+    } else {
+        TenantModel.findOne({_id: tenantId},
+            function(dbErr, dbRes){
+                if (dbErr) return callback(undefined);
+                return callback(undefined, dbRes);
+            }
+        );
+    }
 };
 
-TenantSchema.methods.findTenantsByEmail = function(email: string, callback: (err: Error | undefined, tenant?: ITenantModel[]) => void): void{
+TenantSchema.methods.findTenantsByEmail = function(email: string, callback: (err: Error | undefined, tenant?: ITenantModel[]) => void, populateRefs?: boolean): void{
 
-    TenantModel.find({adminEmail: email})
-        .populate("applications")
-        .exec(function(dbErr, dbRes){
-            if (dbErr) return callback(undefined);
+    if(populateRefs === true){
+        TenantModel.find({adminEmail: email})
+            .populate("applications")
+            .exec(function(dbErr, dbRes){
+                if (dbErr) return callback(undefined);
 
-            return callback(undefined, dbRes);
-    });
+                return callback(undefined, dbRes);
+            });
+    } else {
+        TenantModel.find({adminEmail: email},
+            function(dbErr, dbRes){
+                if (dbErr) return callback(undefined);
+                return callback(undefined, dbRes);
+            }
+        );
+    }
 };
 
 TenantSchema.methods.comparePasswords =  function(candidatePassword: string, hash: string , callback: (err: Error | undefined, tenant?: ITenantModel[]) => void): void{

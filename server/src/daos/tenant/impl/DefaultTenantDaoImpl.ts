@@ -26,10 +26,10 @@ export class DefaultTenantDaoImpl implements TenantDao {
         });
     }
 
-    getTenantById(tenantId: string, callback: (error: Error, tenant?: Tenant) => void): void {
+    getTenantById(tenantId: string, callback: (error: Error, tenant?: Tenant) => void, populateRefs?: boolean): void {
         var newTenant = new TenantModel();
 
-        newTenant.findById(tenantId, (err: Error, tenant: Tenant) => {
+        newTenant.findTenantById(tenantId, (err: Error, tenant: Tenant) => {
             if(err) {
                 throw err;
             }
@@ -37,10 +37,10 @@ export class DefaultTenantDaoImpl implements TenantDao {
                 console.log('Tenant successfully retrieved: ', tenant);
                 return callback(null, tenant);
             }
-        });
+        }, populateRefs);
     }
 
-    getTenantsByEmail(email: string, callback: (err: Error, tenants?: Tenant[])=>void): void {
+    getTenantsByEmail(email: string, callback: (err: Error, tenants?: Tenant[])=>void, populateRefs?: boolean): void {
         var newTenant = new TenantModel();
 
         newTenant.findTenantsByEmail(email, (err: Error, tenants: Tenant[]) => {
@@ -51,7 +51,7 @@ export class DefaultTenantDaoImpl implements TenantDao {
                 console.log('Tenant successfully retrieved: ', tenants);
                 return callback(null, tenants);
             }
-        });
+        }, populateRefs);
     }
 
     authenticate(email: string, candidatePassword: string, callback: (error: Error, token?: string)=>void): void {
