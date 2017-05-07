@@ -10,7 +10,7 @@ import {Tenant} from "../../../domain/Tenant";
 export class DefaultApplicationDaoImpl implements ApplicationDao {
     save(tenant: Tenant, application: Application, callback: (error: Error | undefined, application?: Application) => void): void {
 
-        let newApplication = new ApplicationModel({name: application.name});
+        let newApplication = new ApplicationModel({name: application.name, description: application.description});
 
         newApplication.createApplication(tenant, newApplication, (err: Error, application: Application) => {
             if(err) {
