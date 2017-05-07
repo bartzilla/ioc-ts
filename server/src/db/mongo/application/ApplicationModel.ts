@@ -10,6 +10,9 @@ export var ApplicationSchema: Schema = new Schema({
     name: {
         type: String
     },
+    description: {
+        type: String
+    },
     accounts: [{
         email: {
             type: String,

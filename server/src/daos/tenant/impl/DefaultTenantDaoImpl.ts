@@ -75,7 +75,7 @@ export class DefaultTenantDaoImpl implements TenantDao {
                             let payload = {
                                 adminEmail: tenants[0].adminEmail,
                                 tenantName: tenants[0].tenantName,
-                                numberOfApps: tenants[0].applications.length,
+                                applications: tenants[0].applications,
                                 tenantId: tenants[0]._id
                             };
 

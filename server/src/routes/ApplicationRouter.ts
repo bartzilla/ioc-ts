@@ -51,7 +51,7 @@ export class ApplicationRouter {
 
         let tenantId = req.params.tenantId;
 
-        if(req.body.applicationName && req.body.applicationName.length >= 0) {
+        if(req.body.name && req.body.name.length >= 0) {
 
             this.tenantDao.getTenantById(tenantId, (tenantDaoErr: Error, daoTenant) => {
                 if(tenantDaoErr) {
@@ -60,7 +60,7 @@ export class ApplicationRouter {
                 }
 
                 // Create Application
-                let newApplication = new Application(req.body.applicationName);
+                let newApplication = new Application(req.body.name, req.body.description);
 
                 this.applicationDao.save(daoTenant, newApplication, (applicationDaoErr: Error, daoApplication: Application) => {
                     if(applicationDaoErr) {
@@ -73,7 +73,7 @@ export class ApplicationRouter {
                 })
             });
         }else {
-            return res.status(400).json({success: false, message: 'Required parameters "applicationName" must be specified'});
+            return res.status(400).json({success: false, message: 'Required parameters for "name" must be specified'});
         }
     };
 
