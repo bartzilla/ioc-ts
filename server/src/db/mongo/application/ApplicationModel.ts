@@ -4,6 +4,7 @@ import {ITenantModel} from "../tenant/TenantModel";
 
 export interface IApplicationModel extends Application, Document {
     createApplication(tenant, newApplication: IApplicationModel, callback: (err: Error | undefined, application?: IApplicationModel) => void): void;
+    deleteApplication(application: IApplicationModel, callback: (err: Error | undefined, response) => void): void
 }
 
 export var ApplicationSchema: Schema = new Schema({
@@ -38,6 +39,19 @@ ApplicationSchema.methods.createApplication = function(tenant: ITenantModel, new
 
         return callback(undefined, newApplication);
     });
+
+};
+
+ApplicationSchema.methods.deleteApplication = function(application: IApplicationModel, callback: (err: Error | undefined, response) => void): void{
+
+    // application.remove({ _id: req.body.id }, function(err) {
+    //     if (!err) {
+    //         message.type = 'notification!';
+    //     }
+    //     else {
+    //         message.type = 'error';
+    //     }
+    // });
 
 };
 

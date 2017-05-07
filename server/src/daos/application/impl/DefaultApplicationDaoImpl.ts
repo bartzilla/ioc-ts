@@ -8,6 +8,10 @@ import {Tenant} from "../../../domain/Tenant";
 
 @injectable()
 export class DefaultApplicationDaoImpl implements ApplicationDao {
+
+    deleteApplication(tenantId: string, applicationId: string, callback: (error: Error, response)=>void): void {
+    }
+
     save(tenant: Tenant, application: Application, callback: (error: Error | undefined, application?: Application) => void): void {
 
         let newApplication = new ApplicationModel({name: application.name, description: application.description});
