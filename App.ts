@@ -11,6 +11,8 @@ import {TenantDao} from "./server/src/daos/tenant/TenantDao";
 import {ApplicationDao} from "./server/src/daos/application/ApplicationDao";
 import {ConsoleRouter} from "./server/src/routes/ConsoleRouter";
 import {Config} from "./server/src/config/Config";
+import {AccountRouter} from "./server/src/routes/AccountRouter";
+import {AccountDao} from "./server/src/daos/account/AccountDao";
 var passport = require('passport');
 var TenantModel = require('./server/src/db/mongo/tenant/TenantModel');
 
@@ -23,6 +25,7 @@ class App {
     private config: Config;
     private tenantRouter: TenantRouter;
     private applicationRouter: ApplicationRouter;
+    private accountRouter: AccountRouter;
     private consoleRouter: ConsoleRouter;
 
     //Run configuration methods on the Express instance.
@@ -63,9 +66,12 @@ class App {
         // placeholder route handler
         this.express.use('/', router);
 
-        // API Router
+        //tenant routes
         this.express.use('/v1/tenants', this.tenantRouter.getRouter());
+        // application routes
         this.express.use('/v1/tenants', this.applicationRouter.getRouter());
+        // account routes
+        this.express.use('/v1/applications', this.accountRouter.getRouter());
 
         // Admin Console routes
         this.express.use('/console', this.consoleRouter.getRouter());
@@ -75,12 +81,19 @@ class App {
     }
 
     private injectDependencies(): void {
+
+        // Services
         let tenantDao = container.get<TenantDao>(DAO_TYPES.TenantDao);
         let applicationDao = container.get<ApplicationDao>(DAO_TYPES.ApplicationDao);
+        let accountDao = container.get<AccountDao>(DAO_TYPES.AccountDao);
 
+        // API Routes
         this.config = new Config(tenantDao);
         this.tenantRouter = new TenantRouter(tenantDao);
         this.applicationRouter = new ApplicationRouter(applicationDao, tenantDao);
+        this.accountRouter = new AccountRouter(applicationDao, accountDao);
+
+        // Admin Console Routes
         this.consoleRouter = new ConsoleRouter(tenantDao);
     }
 

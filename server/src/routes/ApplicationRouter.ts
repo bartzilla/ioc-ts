@@ -6,6 +6,7 @@ import DAO_TYPES from "../daos/types/dao-types";
 import {ApplicationDao} from "../daos/application/ApplicationDao";
 import {TenantDao} from "../daos/tenant/TenantDao";
 import passport = require("passport");
+import {Tenant} from "../domain/Tenant";
 
 @injectable()
 export class ApplicationRouter {
@@ -63,7 +64,7 @@ export class ApplicationRouter {
 
         if(req.body.name && req.body.name.length >= 0) {
 
-            this.tenantDao.getTenantById(tenantId, (tenantDaoErr: Error, daoTenant) => {
+            this.tenantDao.getTenantById(tenantId, (tenantDaoErr: Error, daoTenant: Tenant) => {
                 if(tenantDaoErr) {
                     console.log('[APPLICATION]: ERROR: Could not add application.', tenantDaoErr);
                     return res.status(500).json({success: false, message: 'Error adding application.'});

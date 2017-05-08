@@ -1,6 +1,7 @@
 let TYPES = {
-    ApplicationDao: Symbol("ApplicationDao"),
     TenantDao: Symbol("TenantDao"),
+    ApplicationDao: Symbol("ApplicationDao"),
+    AccountDao: Symbol("AccountDao"),
 };
 
 export default TYPES;

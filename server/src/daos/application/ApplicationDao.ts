@@ -6,6 +6,8 @@ export interface ApplicationDao {
 
     getAllApplicationsForTenant(tenantId: string, callback: (error: Error, applications?: Application[]) => void): void
 
+    getApplicationById(applicationId: string, callback: (error: Error, application?: Application) => void, populateRefs?: boolean): void
+
     deleteApplication(applicationId: string, callback: (error: Error, response) => void): void
 }
 

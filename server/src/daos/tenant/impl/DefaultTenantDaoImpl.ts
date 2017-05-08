@@ -27,9 +27,9 @@ export class DefaultTenantDaoImpl implements TenantDao {
     }
 
     getTenantById(tenantId: string, callback: (error: Error, tenant?: Tenant) => void, populateRefs?: boolean): void {
-        var newTenant = new TenantModel();
+        var tenant = new TenantModel();
 
-        newTenant.findTenantById(tenantId, (err: Error, tenant: Tenant) => {
+        tenant.findTenantById(tenantId, (err: Error, tenant: Tenant) => {
             if(err) {
                 throw err;
             }

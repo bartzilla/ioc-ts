@@ -8,6 +8,19 @@ import {Tenant} from "../../../domain/Tenant";
 
 @injectable()
 export class DefaultApplicationDaoImpl implements ApplicationDao {
+    getApplicationById(applicationId: string, callback: (error: Error, application?: Application)=>void, populateRefs?: boolean): void {
+        var applicationModel = new ApplicationModel();
+
+        applicationModel.findApplicationById(applicationId, (err: Error, application: Application) => {
+            if(err) {
+                throw err;
+            }
+            else {
+                console.log('Applicaiton successfully retrieved: ', application);
+                return callback(null, application);
+            }
+        }, populateRefs);
+    }
 
     deleteApplication(applicationId: string, callback: (error: Error, response) => void): void {
 

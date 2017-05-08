@@ -1,10 +1,12 @@
 import {Document, Schema, Model, model} from "mongoose";
 import {Application} from "../../../domain/Application";
 import {ITenantModel} from "../tenant/TenantModel";
+import {Tenant} from "../../../domain/Tenant";
 
 export interface IApplicationModel extends Application, Document {
-    createApplication(tenant, newApplication: IApplicationModel, callback: (err: Error | undefined, application?: IApplicationModel) => void): void;
+    createApplication(tenant: Tenant, newApplication: IApplicationModel, callback: (err: Error | undefined, application?: IApplicationModel) => void): void;
     deleteApplication(applicationId: string, callback: (err: Error | undefined, appId?: string) => void): void
+    findApplicationById(applicationId: string, callback:(err: Error | undefined, application?: IApplicationModel) => void, populateRefs?: boolean): void;
 }
 
 export var ApplicationSchema: Schema = new Schema({
@@ -14,19 +16,7 @@ export var ApplicationSchema: Schema = new Schema({
     description: {
         type: String
     },
-    accounts: [{
-        email: {
-            type: String,
-            lowercase: true,
-            unique: true,
-            sparse: true,
-            required: true
-        },
-        password: {
-            type: String,
-            required: true
-        }
-    }]
+    accounts: [{type: Schema.Types.ObjectId, ref: 'Account'}]
 }, {versionKey: false});
 
 ApplicationSchema.pre('remove', function(next) {
@@ -38,7 +28,7 @@ ApplicationSchema.pre('remove', function(next) {
 ApplicationSchema.methods.createApplication = function(tenant: ITenantModel, newApplication: IApplicationModel, callback: (err: Error | undefined, application?: IApplicationModel) => void): void{
 
     newApplication.save(function (err) {
-        if (err) return callback(undefined);
+        if (err) return callback(err);
 
         tenant.applications.push(newApplication._id);
         tenant.save();
@@ -60,6 +50,26 @@ ApplicationSchema.methods.deleteApplication = function(applicationId: string, ca
         });
     });
 
+};
+
+ApplicationSchema.methods.findApplicationById = function(applicationId: string, callback: (err: Error | undefined, application?: IApplicationModel) => void, populateRefs?: boolean): void{
+
+    if(populateRefs === true){
+        ApplicationModel.findOne({_id: applicationId})
+            .populate("accounts")
+            .exec(function(dbErr, dbRes){
+                if (dbErr) return callback(undefined);
+
+                return callback(undefined, dbRes);
+            });
+    } else {
+        ApplicationModel.findOne({_id: applicationId},
+            function(dbErr, dbRes){
+                if (dbErr) return callback(undefined);
+                return callback(undefined, dbRes);
+            }
+        );
+    }
 };
 
 export const ApplicationModel: Model<IApplicationModel> = model<IApplicationModel>("Application", ApplicationSchema);
