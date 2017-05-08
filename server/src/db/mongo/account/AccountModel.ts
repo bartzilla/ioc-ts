@@ -26,14 +26,14 @@ AccountSchema.methods.createAccount = function(application: IApplicationModel, n
     bcrypt.genSalt(10, (err, salt) => {
 
         if(err) {
-            console.log('[CREATE-ACCOUNT] Error while while generating the salt for password', err);
+            console.log('[CREATE-ACCOUNT] Error while generating the salt for password', err);
             return callback(err);
         }
 
         bcrypt.hash(newAccount.password, salt, (err, hash) => {
 
             if(err) {
-                console.log('[CREATE-TENANT] Error while while hashing password', err);
+                console.log('[CREATE-ACCOUNT] Error while hashing password', err);
                 return callback(err);
             }
             newAccount.password = hash;

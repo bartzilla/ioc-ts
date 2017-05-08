@@ -30,7 +30,7 @@ export class AccountRouter {
      * endpoints.
      */
     private init() {
-        this.router.post('/:applicationId/accounts', this.addAccount);
+        this.router.post('/:applicationId/accounts', passport.authenticate('jwt', {session: false}), this.addAccount);
         // this.router.get('/:tenantId/applications', passport.authenticate('jwt', {session: false}), this.getAllApplications);
         // this.router.delete('/applications/:appId', passport.authenticate('jwt', {session: false}), this.deleteApplication
     }

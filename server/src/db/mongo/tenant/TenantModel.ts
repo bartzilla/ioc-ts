@@ -37,14 +37,14 @@ TenantSchema.methods.createTenant = function(newTenant: ITenantModel, callback: 
     bcrypt.genSalt(10, (err, salt) => {
 
         if(err) {
-            console.log('[CREATE-TENANT] Error while while generating the salt for password', err);
+            console.log('[CREATE-TENANT] Error while generating the salt for password', err);
             return callback(err);
         }
 
         bcrypt.hash(newTenant.adminPassword, salt, (err, hash) => {
 
             if(err) {
-                console.log('[CREATE-TENANT] Error while while hashing password', err);
+                console.log('[CREATE-TENANT] Error while hashing password', err);
                 return callback(err);
             }
             newTenant.adminPassword = hash;
