@@ -31,7 +31,7 @@ export class ApplicationRouter {
     private init() {
         this.router.post('/:tenantId/applications', passport.authenticate('jwt', {session: false}), this.addApplication);
         this.router.get('/:tenantId/applications', passport.authenticate('jwt', {session: false}), this.getAllApplications);
-        this.router.delete('/applications/:appId', this.deleteApplicationById);
+        this.router.delete('/applications/:appId', passport.authenticate('jwt', {session: false}), this.deleteApplicationById);
     }
 
     private deleteApplicationById = (req: Request, res: Response) => {
