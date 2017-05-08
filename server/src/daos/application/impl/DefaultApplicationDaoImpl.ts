@@ -9,7 +9,19 @@ import {Tenant} from "../../../domain/Tenant";
 @injectable()
 export class DefaultApplicationDaoImpl implements ApplicationDao {
 
-    deleteApplication(tenantId: string, applicationId: string, callback: (error: Error, response)=>void): void {
+    deleteApplication(applicationId: string, callback: (error: Error, response) => void): void {
+
+        let application = new ApplicationModel();
+
+        application.deleteApplication(applicationId, (err: Error, appId: string) => {
+            if(err) {
+                throw err;
+            }
+            else {
+                console.log('Application successfully deleted: ', appId);
+                return callback(null, appId);
+            }
+        });
     }
 
     save(tenant: Tenant, application: Application, callback: (error: Error | undefined, application?: Application) => void): void {

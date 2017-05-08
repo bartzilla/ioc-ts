@@ -31,18 +31,16 @@ export class ApplicationRouter {
     private init() {
         this.router.post('/:tenantId/applications', passport.authenticate('jwt', {session: false}), this.addApplication);
         this.router.get('/:tenantId/applications', passport.authenticate('jwt', {session: false}), this.getAllApplications);
-        this.router.delete('/:tenantId/applications/:appId', this.deleteApplicationById);
+        this.router.delete('/applications/:appId', this.deleteApplicationById);
     }
 
     private deleteApplicationById = (req: Request, res: Response) => {
-        let tenantId = req.params.tenantId;
+
         let appId = req.params.appId;
 
-        // this.applicationDao.deleteApplication(tenantId, appId, (applicationsDaoErr: Error, doaResponse: any) => {
-        //     return res.status(200).json({message: "Lets delete some apps"});
-        // });
-
-        return res.status(200).json({message: "Lets delete some apps"});
+        this.applicationDao.deleteApplication(appId, (applicationsDaoErr: Error, daoApplication: any) => {
+            return res.status(200).json(daoApplication);
+        });
     };
 
     private getAllApplications = (req: Request, res: Response) =>  {
