@@ -2,6 +2,7 @@ import {Document, Schema, Model, model} from "mongoose";
 import {Account} from "../../../domain/Account";
 import {IApplicationModel} from "../application/ApplicationModel";
 import {Application} from "../../../domain/Application";
+import * as bcrypt from "bcryptjs";
 
 export interface IAccountModel extends Account, Document {
     createAccount(application: Application, newAccount: IAccountModel, callback: (err: Error | undefined, account?: IAccountModel) => void): void;
@@ -22,13 +23,30 @@ export var AccountSchema: Schema = new Schema({
 
 AccountSchema.methods.createAccount = function(application: IApplicationModel, newAccount: IAccountModel, callback: (err: Error | undefined, account?: IAccountModel) => void): void{
 
-    newAccount.save(function (err) {
-        if (err) return callback(err);
+    bcrypt.genSalt(10, (err, salt) => {
 
-        application.accounts.push(newAccount._id);
-        application.save();
+        if(err) {
+            console.log('[CREATE-ACCOUNT] Error while while generating the salt for password', err);
+            return callback(err);
+        }
 
-        return callback(undefined, newAccount);
+        bcrypt.hash(newAccount.password, salt, (err, hash) => {
+
+            if(err) {
+                console.log('[CREATE-TENANT] Error while while hashing password', err);
+                return callback(err);
+            }
+            newAccount.password = hash;
+
+            newAccount.save(function (err) {
+                if (err) return callback(err);
+
+                application.accounts.push(newAccount._id);
+                application.save();
+
+                return callback(undefined, newAccount);
+            });
+        });
     });
 
 };
