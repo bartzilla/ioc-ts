@@ -31,7 +31,7 @@ export class AccountRouter {
      */
     private init() {
         this.router.post('/:applicationId/accounts', passport.authenticate('jwt', {session: false}), this.addAccount);
-        // this.router.get('/:tenantId/applications', passport.authenticate('jwt', {session: false}), this.getAllApplications);
+        this.router.get('/:applicationId/accounts', passport.authenticate('jwt', {session: false}), this.getAllAccounts);
         // this.router.delete('/applications/:appId', passport.authenticate('jwt', {session: false}), this.deleteApplication
     }
 
@@ -65,6 +65,20 @@ export class AccountRouter {
         }else {
             return res.status(400).json({success: false, message: 'Required parameters "email" and "password" must be specified'});
         }
+    };
+
+    private getAllAccounts = (req: Request, res: Response) =>  {
+        let applicationId = req.params.applicationId;
+
+        this.accountDao.getAllAccountsForApplication(applicationId, (accountsDaoErr: Error, daoAccounts: Account[]) => {
+
+            if(accountsDaoErr) {
+                console.log('[ACCOUNTS]: ERROR: Could not retrieve accounts for given application.', accountsDaoErr);
+                return res.status(500).json({success: false, message: 'Error retrieving accounts for given application.'});
+            }
+
+            return res.status(200).json(daoAccounts);
+        });
     };
 
     public getRouter(): Router {
