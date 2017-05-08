@@ -29,6 +29,12 @@ export var ApplicationSchema: Schema = new Schema({
     }]
 }, {versionKey: false});
 
+ApplicationSchema.pre('remove', function(next) {
+    this.model('Tenant').update({ },
+        { "$pull": { "applications": this._id } },
+        { "multi": true }, next);
+});
+
 ApplicationSchema.methods.createApplication = function(tenant: ITenantModel, newApplication: IApplicationModel, callback: (err: Error | undefined, application?: IApplicationModel) => void): void{
 
     newApplication.save(function (err) {
@@ -44,11 +50,14 @@ ApplicationSchema.methods.createApplication = function(tenant: ITenantModel, new
 
 ApplicationSchema.methods.deleteApplication = function(applicationId: string, callback: (err: Error | undefined, appId?: string) => void): void{
 
-    ApplicationModel.remove({ _id : applicationId }, (err) => {
-
+    ApplicationModel.findOne({_id: applicationId}, function(err, app){
         if (err) return callback(undefined);
 
-        return callback(undefined, applicationId);
+        app.remove(function(err) {
+            if (err) return callback(undefined);
+
+            return callback(undefined, applicationId);
+        });
     });
 
 };
