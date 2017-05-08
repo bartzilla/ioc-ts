@@ -44,7 +44,7 @@ ApplicationSchema.methods.deleteApplication = function(applicationId: string, ca
         if (err) return callback(err);
 
         app.remove(function(err) {
-            if (err) return callback(undefined);
+            if (err) return callback(err);
 
             return callback(undefined, applicationId);
         });

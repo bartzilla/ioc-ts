@@ -32,7 +32,7 @@ export class AccountRouter {
     private init() {
         this.router.post('/:applicationId/accounts', passport.authenticate('jwt', {session: false}), this.addAccount);
         this.router.get('/:applicationId/accounts', passport.authenticate('jwt', {session: false}), this.getAllAccounts);
-        // this.router.delete('/applications/:appId', passport.authenticate('jwt', {session: false}), this.deleteApplication
+        this.router.delete('/accounts/:accountId', passport.authenticate('jwt', {session: false}), this.deleteAccountById);
     }
 
     private addAccount = (req: Request, res: Response) =>  {
@@ -78,6 +78,15 @@ export class AccountRouter {
             }
 
             return res.status(200).json(daoAccounts);
+        });
+    };
+
+    private deleteAccountById = (req: Request, res: Response) => {
+
+        let accountId = req.params.accountId;
+
+        this.accountDao.deleteAccount(accountId, (accountDaoErr: Error, daoAccount: any) => {
+            return res.status(200).json(daoAccount);
         });
     };
 

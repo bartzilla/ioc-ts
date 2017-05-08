@@ -5,5 +5,7 @@ export interface AccountDao {
     save(applicationId: Application, account: Account, callback: (error: Error, account?: Account) => void): void
 
     getAllAccountsForApplication(applicationId: string, callback: (error: Error, applications?: Account[]) => void): void
+
+    deleteAccount(accountId: string, callback: (error: Error, response) => void): void
 }
 

@@ -10,6 +10,20 @@ import {IApplicationModel} from "../../../db/mongo/application/ApplicationModel"
 @injectable()
 export class DefaultAccountDaoImpl implements AccountDao {
 
+    deleteAccount(accountId: string, callback: (error: Error, response)=>void): void {
+        let account = new AccountModel();
+
+        account.deleteAccount(accountId, (err: Error, accountId: string) => {
+            if(err) {
+                throw err;
+            }
+            else {
+                console.log('Account successfully deleted: ', accountId);
+                return callback(null, accountId);
+            }
+        });
+    }
+
     getAllAccountsForApplication(applicationId: string, callback: (error: Error, applications?: Account[])=>void): void {
         let application = new ApplicationModel();
 

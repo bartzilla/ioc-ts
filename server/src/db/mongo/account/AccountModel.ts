@@ -6,7 +6,7 @@ import * as bcrypt from "bcryptjs";
 
 export interface IAccountModel extends Account, Document {
     createAccount(application: Application, newAccount: IAccountModel, callback: (err: Error | undefined, account?: IAccountModel) => void): void;
-    // deleteApplication(applicationId: string, callback: (err: Error | undefined, appId?: string) => void): void
+    deleteAccount(accountId: string, callback: (err: Error | undefined, accountId?: string) => void): void
     // findApplicationById(applicationId: string, callback:(err: Error | undefined, application?: IApplicationModel) => void, populateRefs?: boolean): void;
 }
 
@@ -19,6 +19,12 @@ export var AccountSchema: Schema = new Schema({
         required: true
     }
 }, {versionKey: false});
+
+AccountSchema.pre('remove', function(next) {
+    this.model('Application').update({ },
+        { "$pull": { "accounts": this._id } },
+        { "multi": true }, next);
+});
 
 
 AccountSchema.methods.createAccount = function(application: IApplicationModel, newAccount: IAccountModel, callback: (err: Error | undefined, account?: IAccountModel) => void): void{
@@ -51,17 +57,17 @@ AccountSchema.methods.createAccount = function(application: IApplicationModel, n
 
 };
 
-AccountSchema.methods.deleteApplication = function(applicationId: string, callback: (err: Error | undefined, appId?: string) => void): void{
+AccountSchema.methods.deleteAccount = function(accountId: string, callback: (err: Error | undefined, accountId?: string) => void): void{
 
-    // AccountSchema.findOne({_id: applicationId}, function(err, app){
-    //     if (err) return callback(undefined);
-    //
-    //     app.remove(function(err) {
-    //         if (err) return callback(undefined);
-    //
-    //         return callback(undefined, applicationId);
-    //     });
-    // });
+    AccountModel.findOne({_id: accountId}, function(err, app){
+        if (err) return callback(err);
+
+        app.remove(function(err) {
+            if (err) return callback(err);
+
+            return callback(undefined, accountId);
+        });
+    });
 
 };
 
