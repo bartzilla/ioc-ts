@@ -41,7 +41,7 @@ ApplicationSchema.methods.createApplication = function(tenant: ITenantModel, new
 ApplicationSchema.methods.deleteApplication = function(applicationId: string, callback: (err: Error | undefined, appId?: string) => void): void{
 
     ApplicationModel.findOne({_id: applicationId}, function(err, app){
-        if (err) return callback(undefined);
+        if (err) return callback(err);
 
         app.remove(function(err) {
             if (err) return callback(undefined);
@@ -58,14 +58,14 @@ ApplicationSchema.methods.findApplicationById = function(applicationId: string, 
         ApplicationModel.findOne({_id: applicationId})
             .populate("accounts")
             .exec(function(dbErr, dbRes){
-                if (dbErr) return callback(undefined);
+                if (dbErr) return callback(dbErr);
 
                 return callback(undefined, dbRes);
             });
     } else {
         ApplicationModel.findOne({_id: applicationId},
             function(dbErr, dbRes){
-                if (dbErr) return callback(undefined);
+                if (dbErr) return callback(dbErr);
                 return callback(undefined, dbRes);
             }
         );
