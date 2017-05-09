@@ -20,9 +20,17 @@ export var ApplicationSchema: Schema = new Schema({
 }, {versionKey: false});
 
 ApplicationSchema.pre('remove', function(next) {
-    this.model('Tenant').update({ },
-        { "$pull": { "applications": this._id } },
-        { "multi": true }, next);
+
+    let tenantModel = this.model('Tenant');
+    let appId = this._id;
+
+    this.model('Account').remove({_id: {$in: this.accounts }}, function(){
+
+        tenantModel.update({ },
+            { $pull: { applications: appId } },
+            { multi: true }, next);
+    });
+
 });
 
 ApplicationSchema.methods.createApplication = function(tenant: ITenantModel, newApplication: IApplicationModel, callback: (err: Error | undefined, application?: IApplicationModel) => void): void{
