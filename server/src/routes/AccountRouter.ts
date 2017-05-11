@@ -1,5 +1,4 @@
 import {Router, Request, Response, NextFunction} from 'express';
-import {Application} from "../domain/Application";
 import "reflect-metadata";
 import {injectable, inject} from "inversify";
 import DAO_TYPES from "../daos/types/dao-types";
@@ -30,39 +29,30 @@ export class AccountRouter {
      * endpoints.
      */
     private init() {
-        this.router.post('/:applicationId/accounts', passport.authenticate('jwt', {session: false}), this.addAccount);
+        // this.router.post('/:applicationId/accounts', passport.authenticate('jwt', {session: false}), this.addAccount);
+        this.router.post('/', passport.authenticate('jwt', {session: false}), this.addAccount);
+        this.router.delete('/:accountId', passport.authenticate('jwt', {session: false}), this.deleteAccountById);
+
         this.router.get('/:applicationId/accounts', passport.authenticate('jwt', {session: false}), this.getAllAccounts);
-        this.router.delete('/accounts/:accountId', passport.authenticate('jwt', {session: false}), this.deleteAccountById);
     }
 
     private addAccount = (req: Request, res: Response) =>  {
-
-        let applicationId = req.params.applicationId;
-
         if(req.body.email && req.body.email.length >= 0
             && req.body.password && req.body.password.length >= 0){
 
-            this.applicationDao.getApplicationById(applicationId, (applicationDaoErr: Error, daoApplication: Application) => {
-                if(applicationDaoErr) {
-                    console.log('[ACCOUNTS]: ERROR: Could not add account.', applicationDaoErr);
+            // Create Account
+            let newAccount = new Account(req.body.email, req.body.password);
+
+            this.accountDao.save(newAccount, (accountDaoErr: Error, daoAccount: Account) => {
+                if(accountDaoErr) {
+                    console.log('[ACCOUNTS]: ERROR: Could not add account.', accountDaoErr);
                     return res.status(500).json({success: false, message: 'Error adding account.'});
-                } else {
-
-                    // Create Application
-                    let newAccount = new Account(req.body.email, req.body.password);
-
-                    this.accountDao.save(daoApplication, newAccount, (accountDaoErr: Error, daoAccount: Account) => {
-                        if(accountDaoErr) {
-                            console.log('[ACCOUNTS]: ERROR: Could not add account.', accountDaoErr);
-                            return res.status(500).json({success: false, message: 'Error adding account.'});
-                        }
-                        else {
-                            return res.status(200).json(daoAccount);
-                        }
-                    });
+                }
+                else {
+                    return res.status(200).json(daoAccount);
                 }
             });
-        }else {
+        } else {
             return res.status(400).json({success: false, message: 'Required parameters "email" and "password" must be specified'});
         }
     };

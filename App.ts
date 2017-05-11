@@ -71,7 +71,7 @@ class App {
         // application routes
         this.express.use('/v1/tenants', this.applicationRouter.getRouter());
         // account routes
-        this.express.use('/v1/applications', this.accountRouter.getRouter());
+        this.express.use('/v1/accounts', this.accountRouter.getRouter());
 
         // Admin Console routes
         this.express.use('/console', this.consoleRouter.getRouter());
@@ -90,7 +90,7 @@ class App {
         // API Routes
         this.config = new Config(tenantDao);
         this.tenantRouter = new TenantRouter(tenantDao);
-        this.applicationRouter = new ApplicationRouter(applicationDao, tenantDao);
+        this.applicationRouter = new ApplicationRouter(applicationDao, tenantDao, accountDao);
         this.accountRouter = new AccountRouter(applicationDao, accountDao);
 
         // Admin Console Routes

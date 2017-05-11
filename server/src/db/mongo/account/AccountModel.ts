@@ -5,19 +5,25 @@ import {Application} from "../../../domain/Application";
 import * as bcrypt from "bcryptjs";
 
 export interface IAccountModel extends Account, Document {
-    createAccount(application: Application, newAccount: IAccountModel, callback: (err: Error | undefined, account?: IAccountModel) => void): void;
+    createAccount(newAccount: IAccountModel, callback: (err: Error | undefined, account?: IAccountModel) => void): void;
+    // createAccount(application: Application, newAccount: IAccountModel, callback: (err: Error | undefined, account?: IAccountModel) => void): void;
+    addApplication(application: Application, account: Account, callback: (err: Error | undefined, account?: Account) => void): void
     deleteAccount(accountId: string, callback: (err: Error | undefined, accountId?: string) => void): void
-    // findApplicationById(applicationId: string, callback:(err: Error | undefined, application?: IApplicationModel) => void, populateRefs?: boolean): void;
+    findAccountByEmail(email: string, callback:(err: Error | undefined, account?: IAccountModel) => void, populateRefs?: boolean): void;
+    findAccountById(accountId: string, callback:(err: Error | undefined, account?: IAccountModel) => void, populateRefs?: boolean): void;
 }
 
 export var AccountSchema: Schema = new Schema({
     email: {
-        type: String
+        type: String,
+        required: true,
+        unique: true
     },
     password: {
         type: String,
         required: true
-    }
+    },
+    applications:[{type: Schema.Types.ObjectId, ref: 'Application'}]
 }, {versionKey: false});
 
 AccountSchema.pre('remove', function(next) {
@@ -26,8 +32,46 @@ AccountSchema.pre('remove', function(next) {
         { "multi": true }, next);
 });
 
+AccountSchema.methods.findAccountByEmail = function(email: string, callback: (err: Error | undefined, account?: IAccountModel) => void, populateRefs?: boolean): void{
 
-AccountSchema.methods.createAccount = function(application: IApplicationModel, newAccount: IAccountModel, callback: (err: Error | undefined, account?: IAccountModel) => void): void{
+    if(populateRefs === true){
+        AccountModel.findOne({email: email})
+            .populate("applications")
+            .exec(function(dbErr, dbRes){
+                if (dbErr) return callback(dbErr);
+
+                return callback(undefined, dbRes);
+            });
+    } else {
+        AccountModel.findOne({email: email},
+            function(dbErr, dbRes){
+                if (dbErr) return callback(dbErr);
+                return callback(undefined, dbRes);
+            }
+        );
+    }
+};
+
+AccountSchema.methods.findAccountById = function(accountId: string, callback:(err: Error | undefined, account?: IAccountModel) => void, populateRefs?: boolean): void {
+    if(populateRefs === true){
+        AccountModel.findOne({_id: accountId})
+            .populate("applications")
+            .exec(function(dbErr, dbRes){
+                if (dbErr) return callback(dbErr);
+
+                return callback(undefined, dbRes);
+            });
+    } else {
+        AccountModel.findOne({_id: accountId},
+            function(dbErr, dbRes){
+                if (dbErr) return callback(dbErr);
+                return callback(undefined, dbRes);
+            }
+        );
+    }
+};
+
+AccountSchema.methods.createAccount = function(newAccount: IAccountModel, callback: (err: Error | undefined, account?: IAccountModel) => void): void{
 
     bcrypt.genSalt(10, (err, salt) => {
 
@@ -44,17 +88,26 @@ AccountSchema.methods.createAccount = function(application: IApplicationModel, n
             }
             newAccount.password = hash;
 
-            newAccount.save(function (err) {
+            if(err) return callback(err);
+
+            newAccount.save(function(err){
                 if (err) return callback(err);
-
-                application.accounts.push(newAccount._id);
-                application.save();
-
                 return callback(undefined, newAccount);
             });
         });
     });
+};
 
+
+AccountSchema.methods.addApplication = function(application: IApplicationModel, account: IAccountModel, callback: (err: Error | undefined, accounts?: Account) => void): void{
+
+    account.applications.push(application._id);
+
+    account.save(function(err) {
+        if (err) return callback(err);
+
+        return callback(undefined, account)
+    });
 };
 
 AccountSchema.methods.deleteAccount = function(accountId: string, callback: (err: Error | undefined, accountId?: string) => void): void{

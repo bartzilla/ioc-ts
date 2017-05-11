@@ -8,9 +8,23 @@ import {Tenant} from "../../../domain/Tenant";
 
 @injectable()
 export class DefaultApplicationDaoImpl implements ApplicationDao {
+    addAccount(applicationId: string, account: Account, callback: (error: Error, application?: Application)=>void): void {
+
+        let applicationModel = new ApplicationModel();
+
+        applicationModel.addAccount(applicationId, account, (err: Error, application: Application) => {
+            if(err) {
+                throw err;
+            }
+            else {
+                console.log('Account successfully added to application: ', application);
+                return callback(null, application);
+            }
+        });
+    }
 
     getApplicationById(applicationId: string, callback: (error: Error, application?: Application)=>void, populateRefs?: boolean): void {
-        var applicationModel = new ApplicationModel();
+        let applicationModel = new ApplicationModel();
 
         applicationModel.findApplicationById(applicationId, (err: Error, application: Application) => {
             if(err) {
