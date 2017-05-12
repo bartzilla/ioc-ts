@@ -13,6 +13,7 @@ import {ConsoleRouter} from "./server/src/routes/ConsoleRouter";
 import {Config} from "./server/src/config/Config";
 import {AccountRouter} from "./server/src/routes/AccountRouter";
 import {AccountDao} from "./server/src/daos/account/AccountDao";
+import {ApplicationStoreRouter} from "./server/src/routes/ApplicationStoreRouter";
 var passport = require('passport');
 var TenantModel = require('./server/src/db/mongo/tenant/TenantModel');
 
@@ -27,6 +28,7 @@ class App {
     private applicationRouter: ApplicationRouter;
     private accountRouter: AccountRouter;
     private consoleRouter: ConsoleRouter;
+    private applicationStoreRouter: ApplicationStoreRouter;
 
     //Run configuration methods on the Express instance.
     constructor() {
@@ -72,6 +74,8 @@ class App {
         this.express.use('/v1/tenants', this.applicationRouter.getRouter());
         // account routes
         this.express.use('/v1/accounts', this.accountRouter.getRouter());
+        // applicationstore routes
+        this.express.use('/v1/applicationstore', this.applicationStoreRouter.getRouter());
 
         // Admin Console routes
         this.express.use('/console', this.consoleRouter.getRouter());
@@ -90,8 +94,9 @@ class App {
         // API Routes
         this.config = new Config(tenantDao);
         this.tenantRouter = new TenantRouter(tenantDao);
-        this.applicationRouter = new ApplicationRouter(applicationDao, tenantDao, accountDao);
+        this.applicationRouter = new ApplicationRouter(applicationDao, tenantDao);
         this.accountRouter = new AccountRouter(applicationDao, accountDao);
+        this.applicationStoreRouter = new ApplicationStoreRouter(applicationDao, accountDao);
 
         // Admin Console Routes
         this.consoleRouter = new ConsoleRouter(tenantDao);

@@ -75,12 +75,12 @@ ApplicationSchema.methods.addAccount = function(applicationId: string, account: 
     ApplicationModel.findOne({_id: applicationId}, function(dbErr, dbApp){
         if (dbErr) return callback(dbErr);
 
-        dbApp.accounts.push(account._id);
+        if(dbApp.accounts.indexOf(account._id) <= -1) {
+            dbApp.accounts.push(account._id);
+        }
 
         dbApp.save(function(err) {
             if (err) return callback(err);
-
-            // return callback(undefined, applicationId);
 
             return callback(undefined, dbApp)
         });

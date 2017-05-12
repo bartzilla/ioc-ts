@@ -101,7 +101,9 @@ AccountSchema.methods.createAccount = function(newAccount: IAccountModel, callba
 
 AccountSchema.methods.addApplication = function(application: IApplicationModel, account: IAccountModel, callback: (err: Error | undefined, accounts?: Account) => void): void{
 
-    account.applications.push(application._id);
+    if(account.applications.indexOf(application._id) <= -1) {
+        account.applications.push(application._id);
+    }
 
     account.save(function(err) {
         if (err) return callback(err);
