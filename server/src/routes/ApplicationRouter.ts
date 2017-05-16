@@ -1,26 +1,31 @@
 import {Request, Response, Router} from "express";
-import {Application} from "../domain/Application";
 import "reflect-metadata";
 import {inject, injectable} from "inversify";
 import DAO_TYPES from "../daos/types/dao-types";
 import {ApplicationDao} from "../daos/application/ApplicationDao";
-import {TenantDao} from "../daos/tenant/TenantDao";
-import {Tenant} from "../domain/Tenant";
 import passport = require("passport");
+import {Application} from "../domain/Application";
+import {Tenant} from "../domain/Tenant";
+import {TenantDao} from "../daos/tenant/TenantDao";
+import {AccountDao} from "../daos/account/AccountDao";
 
 @injectable()
 export class ApplicationRouter {
     private applicationDao: ApplicationDao;
     private tenantDao: TenantDao;
+    private accountDao: AccountDao;
     private router: Router;
 
     /**
      * Initialize the ApplicationRouter
      */
-    public constructor(@inject(DAO_TYPES.ApplicationDao) applicationDao: ApplicationDao,
-                       @inject(DAO_TYPES.TenantDao) tenantDao: TenantDao) {
-        this.applicationDao = applicationDao;
+    public constructor(@inject(DAO_TYPES.TenantDao) tenantDao: TenantDao,
+                       @inject(DAO_TYPES.ApplicationDao) applicationDao: ApplicationDao,
+                       @inject(DAO_TYPES.AccountDao) accountDao: AccountDao) {
         this.tenantDao = tenantDao;
+        this.applicationDao = applicationDao;
+        this.accountDao = accountDao;
+
         this.router = Router();
         this.init();
     }
@@ -30,22 +35,26 @@ export class ApplicationRouter {
      * endpoints.
      */
     private init() {
-        this.router.post('/:tenantId/applications', passport.authenticate('jwt', {session: false}), this.addApplication);
-        this.router.get('/:tenantId/applications', passport.authenticate('jwt', {session: false}), this.getAllApplications);
-        this.router.delete('/applications/:appId', passport.authenticate('jwt', {session: false}), this.deleteApplicationById);
+        this.router.post('/', passport.authenticate('jwt', {session: false}), this.addApplication);
+
+        this.router.get('/', passport.authenticate('jwt', {session: false}), this.getAllApplications);
+
+        this.router.delete('/:applicationId', passport.authenticate('jwt', {session: false}), this.deleteApplicationById);
+
+        this.router.get('/:applicationId/accounts', passport.authenticate('jwt', {session: false}), this.getAllAccounts);
     }
 
     private deleteApplicationById = (req: Request, res: Response) => {
 
-        let appId = req.params.appId;
+        let applicationId = req.params.applicationId;
 
-        this.applicationDao.deleteApplication(appId, (applicationsDaoErr: Error, daoApplication: any) => {
+        this.applicationDao.deleteApplication(applicationId, (applicationsDaoErr: Error, daoApplication: any) => {
             return res.status(200).json(daoApplication);
         });
     };
 
     private getAllApplications = (req: Request, res: Response) =>  {
-        let tenantId = req.params.tenantId;
+        let tenantId = req.user.id;
 
         this.applicationDao.getAllApplicationsForTenant(tenantId, (applicationsDaoErr: Error, daoApplications: Application[]) => {
 
@@ -60,7 +69,7 @@ export class ApplicationRouter {
 
     private addApplication = (req: Request, res: Response) =>  {
 
-        let tenantId = req.params.tenantId;
+        let tenantId = req.user.id;
 
         if(req.body.name && req.body.name.length >= 0) {
 
@@ -86,6 +95,20 @@ export class ApplicationRouter {
         }else {
             return res.status(400).json({success: false, message: 'Required parameters for "name" must be specified'});
         }
+    };
+
+    private getAllAccounts = (req: Request, res: Response) =>  {
+        let applicationId = req.params.applicationId;
+
+        this.accountDao.getAllAccountsForApplication(applicationId, (accountsDaoErr: Error, daoAccounts: Account[]) => {
+
+            if(accountsDaoErr) {
+                console.log('[ACCOUNTS]: ERROR: Could not retrieve accounts for given application.', accountsDaoErr);
+                return res.status(500).json({success: false, message: 'Error retrieving accounts for given application.'});
+            }
+
+            return res.status(200).json(daoAccounts);
+        });
     };
 
     public getRouter(): Router {

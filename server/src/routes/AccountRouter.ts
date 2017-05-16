@@ -1,4 +1,4 @@
-import {Router, Request, Response, NextFunction} from 'express';
+import {Router, Request, Response} from 'express';
 import "reflect-metadata";
 import {injectable, inject} from "inversify";
 import DAO_TYPES from "../daos/types/dao-types";
@@ -9,16 +9,13 @@ import {Account} from "../domain/Account";
 
 @injectable()
 export class AccountRouter {
-    private applicationDao: ApplicationDao;
     private accountDao: AccountDao;
     private router: Router;
 
     /**
      * Initialize the ApplicationRouter
      */
-    public constructor(@inject(DAO_TYPES.ApplicationDao) applicationDao: ApplicationDao,
-                       @inject(DAO_TYPES.AccountDao) accountDao: AccountDao) {
-        this.applicationDao = applicationDao;
+    public constructor(@inject(DAO_TYPES.AccountDao) accountDao: AccountDao) {
         this.accountDao = accountDao;
         this.router = Router();
         this.init();
@@ -29,11 +26,8 @@ export class AccountRouter {
      * endpoints.
      */
     private init() {
-        // this.router.post('/:applicationId/accounts', passport.authenticate('jwt', {session: false}), this.addAccount);
         this.router.post('/', passport.authenticate('jwt', {session: false}), this.addAccount);
         this.router.delete('/:accountId', passport.authenticate('jwt', {session: false}), this.deleteAccountById);
-
-        this.router.get('/:applicationId/accounts', passport.authenticate('jwt', {session: false}), this.getAllAccounts);
     }
 
     private addAccount = (req: Request, res: Response) =>  {
@@ -55,20 +49,6 @@ export class AccountRouter {
         } else {
             return res.status(400).json({success: false, message: 'Required parameters "email" and "password" must be specified'});
         }
-    };
-
-    private getAllAccounts = (req: Request, res: Response) =>  {
-        let applicationId = req.params.applicationId;
-
-        this.accountDao.getAllAccountsForApplication(applicationId, (accountsDaoErr: Error, daoAccounts: Account[]) => {
-
-            if(accountsDaoErr) {
-                console.log('[ACCOUNTS]: ERROR: Could not retrieve accounts for given application.', accountsDaoErr);
-                return res.status(500).json({success: false, message: 'Error retrieving accounts for given application.'});
-            }
-
-            return res.status(200).json(daoAccounts);
-        });
     };
 
     private deleteAccountById = (req: Request, res: Response) => {

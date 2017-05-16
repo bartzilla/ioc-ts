@@ -4,16 +4,19 @@ import "reflect-metadata";
 import {injectable, inject} from "inversify";
 import DAO_TYPES from "../daos/types/dao-types";
 import {TenantDao} from "../daos/tenant/TenantDao";
+import passport = require("passport");
+import {ApplicationDao} from "../daos/application/ApplicationDao";
 
 @injectable()
 export class TenantRouter {
     private tenantDao: TenantDao;
+    private applicationDao: ApplicationDao;
     private router: Router;
 
     /**
      * Initialize the TenantRouter
      */
-    public constructor(@inject(DAO_TYPES.TenantDao) tenantDao?: TenantDao) {
+    public constructor(@inject(DAO_TYPES.TenantDao) tenantDao: TenantDao) {
         this.tenantDao = tenantDao;
         this.router = Router();
         this.init();
