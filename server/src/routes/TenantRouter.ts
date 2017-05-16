@@ -5,12 +5,10 @@ import {injectable, inject} from "inversify";
 import DAO_TYPES from "../daos/types/dao-types";
 import {TenantDao} from "../daos/tenant/TenantDao";
 import passport = require("passport");
-import {ApplicationDao} from "../daos/application/ApplicationDao";
 
 @injectable()
 export class TenantRouter {
     private tenantDao: TenantDao;
-    private applicationDao: ApplicationDao;
     private router: Router;
 
     /**

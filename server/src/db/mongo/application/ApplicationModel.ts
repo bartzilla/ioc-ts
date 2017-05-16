@@ -1,4 +1,4 @@
-import {Document, Schema, Model, model} from "mongoose";
+import {Document, Schema, Model, model, Types} from "mongoose";
 import {Application} from "../../../domain/Application";
 import {ITenantModel} from "../tenant/TenantModel";
 import {Tenant} from "../../../domain/Tenant";

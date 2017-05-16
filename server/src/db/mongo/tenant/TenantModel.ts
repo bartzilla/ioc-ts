@@ -1,4 +1,4 @@
-import { Document, Schema, Model, model} from "mongoose";
+import { Document, Schema, Model, model, Types} from "mongoose";
 import * as bcrypt from "bcryptjs";
 import {Tenant} from "../../../domain/Tenant";
 

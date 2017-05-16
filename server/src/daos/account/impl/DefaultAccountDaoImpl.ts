@@ -15,7 +15,7 @@ export class DefaultAccountDaoImpl implements AccountDao {
 
         newAccount.createAccount(newAccount, (err: Error, account: Account) => {
             if(err) {
-                throw err;
+                return callback(err);
             }
             else {
                 console.log('Account successfully created: ', account);
@@ -29,7 +29,7 @@ export class DefaultAccountDaoImpl implements AccountDao {
 
         accountModel.findAccountByEmail(email, (err: Error, account: Account) => {
             if(err) {
-                throw err;
+                return callback(err);
             }
             else {
                 console.log('Account successfully retrieved: ', account);
@@ -43,7 +43,7 @@ export class DefaultAccountDaoImpl implements AccountDao {
 
         account.findAccountById(accountId, (err: Error, account: Account) => {
             if(err) {
-                throw err;
+                return callback(err);
             }
             else {
                 console.log('Account successfully retrieved: ', account);
@@ -52,12 +52,12 @@ export class DefaultAccountDaoImpl implements AccountDao {
         }, populateRefs);
     }
 
-    deleteAccount(accountId: string, callback: (error: Error, response)=>void): void {
+    deleteAccount(accountId: string, callback: (error: Error, response?)=>void): void {
         let account = new AccountModel();
 
         account.deleteAccount(accountId, (err: Error, accountId: string) => {
             if(err) {
-                throw err;
+                return callback(err);
             }
             else {
                 console.log('Account successfully deleted: ', accountId);
@@ -71,7 +71,7 @@ export class DefaultAccountDaoImpl implements AccountDao {
 
         application.findApplicationById(applicationId, (err: Error, application: Application) => {
             if(err) {
-                throw err;
+                return callback(err);
             }
             else {
                 // check if tenant has no apps. Undefined or null
@@ -83,12 +83,12 @@ export class DefaultAccountDaoImpl implements AccountDao {
 
     }
 
-    addApplication(application: Application, account: Account, callback: (error: Error, account: Account)=>void): void {
+    addApplication(application: Application, account: Account, callback: (error: Error, account?: Account)=>void): void {
         let accountModel = new AccountModel();
 
         accountModel.addApplication(application, account, (err: Error, account: Account) => {
             if(err) {
-                throw err;
+                return callback(err);
             }
             else {
                 console.log('Application successfully added to account: ', account);

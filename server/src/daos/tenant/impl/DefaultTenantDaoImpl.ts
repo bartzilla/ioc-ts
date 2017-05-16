@@ -17,7 +17,7 @@ export class DefaultTenantDaoImpl implements TenantDao {
 
         newTenant.createTenant(newTenant, (err: Error, tenant: Tenant) => {
             if(err) {
-                throw err;
+                return callback(err);
             }
             else {
                 console.log('Tenant successfully created: ', tenant);
@@ -31,7 +31,7 @@ export class DefaultTenantDaoImpl implements TenantDao {
 
         tenant.findTenantById(tenantId, (err: Error, tenant: Tenant) => {
             if(err) {
-                throw err;
+                return callback(err);
             }
             else {
                 console.log('Tenant successfully retrieved: ', tenant);
@@ -45,7 +45,7 @@ export class DefaultTenantDaoImpl implements TenantDao {
 
         newTenant.findTenantsByEmail(email, (err: Error, tenants: Tenant[]) => {
             if(err) {
-                throw err;
+                return callback(err);
             }
             else {
                 console.log('Tenant successfully retrieved: ', tenants);
@@ -60,7 +60,7 @@ export class DefaultTenantDaoImpl implements TenantDao {
 
         newTenant.findTenantsByEmail(email, (err: Error, tenants: ITenantModel[]) => {
             if(err) {
-                throw err;
+                return callback(err);
             }
             else {
                 if (tenants.length > 0) {
@@ -68,7 +68,7 @@ export class DefaultTenantDaoImpl implements TenantDao {
                     // At the moment we only support one tenant per user, so we try to authenticate tenant
                     // in position zero
                     tenants[0].comparePasswords(candidatePassword, tenants[0].adminPassword, (err, isMatch) => {
-                        if(err) throw err;
+                        if(err) return callback(err);
                         if (isMatch && !err) {
                             // Create token if the password matched and no error was thrown
                             console.log(tenants[0]._id);

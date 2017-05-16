@@ -14,7 +14,7 @@ export class DefaultApplicationDaoImpl implements ApplicationDao {
 
         applicationModel.addAccount(applicationId, account, (err: Error, application: Application) => {
             if(err) {
-                throw err;
+                return callback(err);
             }
             else {
                 console.log('Account successfully added to application: ', application);
@@ -28,7 +28,7 @@ export class DefaultApplicationDaoImpl implements ApplicationDao {
 
         applicationModel.findApplicationById(applicationId, (err: Error, application: Application) => {
             if(err) {
-                throw err;
+                return callback(err);
             }
             else {
                 console.log('Applicaiton successfully retrieved: ', application);
@@ -37,13 +37,13 @@ export class DefaultApplicationDaoImpl implements ApplicationDao {
         }, populateRefs);
     }
 
-    deleteApplication(applicationId: string, callback: (error: Error, response) => void): void {
+    deleteApplication(applicationId: string, callback: (error: Error, response?) => void): void {
 
         let application = new ApplicationModel();
 
         application.deleteApplication(applicationId, (err: Error, appId: string) => {
             if(err) {
-                throw err;
+                return callback(err);
             }
             else {
                 console.log('Application successfully deleted: ', appId);
@@ -58,7 +58,7 @@ export class DefaultApplicationDaoImpl implements ApplicationDao {
 
         newApplication.createApplication(tenant, newApplication, (err: Error, application: Application) => {
             if(err) {
-                throw err;
+                return callback(err);
             }
             else {
                 console.log('Application successfully created: ', application);

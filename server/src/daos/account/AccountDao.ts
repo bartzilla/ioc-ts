@@ -4,7 +4,7 @@ import {Account} from "../../domain/Account";
 export interface AccountDao {
     save(account: Account, callback: (error: Error, account?: Account) => void): void
 
-    addApplication(application: Application, account: Account, callback: (error: Error, account: Account) => void): void
+    addApplication(application: Application, account: Account, callback: (error: Error, account?: Account) => void): void
 
     getAllAccountsForApplication(applicationId: string, callback: (error: Error, accounts?: Account[]) => void): void
 
@@ -12,6 +12,6 @@ export interface AccountDao {
 
     getAccountById(accountId: string, callback: (error: Error, account?: Account) => void, populateRefs?: boolean): void
 
-    deleteAccount(accountId: string, callback: (error: Error, response) => void): void
+    deleteAccount(accountId: string, callback: (error: Error, response?) => void): void
 }
 

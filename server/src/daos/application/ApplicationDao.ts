@@ -10,6 +10,6 @@ export interface ApplicationDao {
 
     getApplicationById(applicationId: string, callback: (error: Error, application?: Application) => void, populateRefs?: boolean): void
 
-    deleteApplication(applicationId: string, callback: (error: Error, response) => void): void
+    deleteApplication(applicationId: string, callback: (error: Error, response?) => void): void
 }
 
