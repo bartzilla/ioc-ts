@@ -5,6 +5,7 @@ import {Application} from "../../../domain/Application";
 import {AccountModel} from "../../../db/mongo/account/AccountModel"
 import {ApplicationModel} from "../../../db/mongo/application/ApplicationModel"
 import {Account} from "../../../domain/Account";
+import {ResourceNotFoundException} from "../../../error/ResourceNotFoundException";
 
 @injectable()
 export class DefaultAccountDaoImpl implements AccountDao {
@@ -75,7 +76,7 @@ export class DefaultAccountDaoImpl implements AccountDao {
             }
             else {
                 // check if tenant has no apps. Undefined or null
-                if (application == null) return callback(null, []);
+                if (application == null) throw new ResourceNotFoundException("Customer not found!");
 
                 return callback(null, application.accounts);
             }
