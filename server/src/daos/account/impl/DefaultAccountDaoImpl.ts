@@ -76,7 +76,7 @@ export class DefaultAccountDaoImpl implements AccountDao {
             }
             else {
                 // check if tenant has no apps. Undefined or null
-                if (application == null) throw new ResourceNotFoundException("Customer not found!");
+                if (application == null) return callback(null, []);
 
                 return callback(null, application.accounts);
             }

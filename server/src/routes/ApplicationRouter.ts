@@ -102,11 +102,13 @@ export class ApplicationRouter {
 
         this.accountDao.getAllAccountsForApplication(applicationId, (accountsDaoErr: Error, daoAccounts: Account[]) => {
 
-try{
+            if(accountsDaoErr) {
+                console.log('[APPLICATION]: ERROR: Could not get accounts for given application.', accountsDaoErr);
+                return res.status(500).json({success: false, message: 'Error getting accounts for give application.'});
+            }
 
-} catch (e){
-    
-}
+            if(daoAccounts.length <= 0) res.status(404).json({success: false, message: 'The application was not found'});
+
             return res.status(200).json(daoAccounts);
         });
     };
