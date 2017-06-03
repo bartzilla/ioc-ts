@@ -5,7 +5,6 @@ import {Application} from "../../../domain/Application";
 import {AccountModel} from "../../../db/mongo/account/AccountModel"
 import {ApplicationModel} from "../../../db/mongo/application/ApplicationModel"
 import {Account} from "../../../domain/Account";
-import {ResourceNotFoundException} from "../../../error/ResourceNotFoundException";
 
 @injectable()
 export class DefaultAccountDaoImpl implements AccountDao {
