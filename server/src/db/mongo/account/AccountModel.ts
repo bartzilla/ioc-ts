@@ -31,26 +31,6 @@ AccountSchema.pre('remove', function(next) {
         { "multi": true }, next);
 });
 
-AccountSchema.methods.getAllAccountsForTenant = function(email: string, callback: (err: Error | undefined, account?: IAccountModel) => void, populateRefs?: boolean): void{
-
-    if(populateRefs === true){
-        AccountModel.findOne({email: email})
-            .populate("applications")
-            .exec(function(dbErr, dbRes){
-                if (dbErr) return callback(dbErr);
-
-                return callback(undefined, dbRes);
-            });
-    } else {
-        AccountModel.findOne({email: email},
-            function(dbErr, dbRes){
-                if (dbErr) return callback(dbErr);
-                return callback(undefined, dbRes);
-            }
-        );
-    }
-};
-
 AccountSchema.methods.findAccountByEmail = function(email: string, callback: (err: Error | undefined, account?: IAccountModel) => void, populateRefs?: boolean): void{
 
     if(populateRefs === true){
