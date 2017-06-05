@@ -7,5 +7,5 @@ Is an intuitive Open Source REST api for authentication & authorization :passpor
 
 This project intention is to create a user management service for authentication and authorization. This is the api application where users will be able to create tenants, applications and accounts. If you want to use the admin console check out the repo for the doorman admin console. https://github.com/bartzilla/ioc-console
 
-🚧 The project is still a WIP. I will be adding a more detailed description of each feature and how to use it 🚧
+🚧 The project is still a WIP. I will be adding a more detailed description of what the API is capable of doing.🚧
 ===
