@@ -2,7 +2,6 @@ import {Router, Request, Response} from 'express';
 import "reflect-metadata";
 import {injectable, inject} from "inversify";
 import DAO_TYPES from "../daos/types/dao-types";
-import {ApplicationDao} from "../daos/application/ApplicationDao";
 import passport = require("passport");
 import {AccountDao} from "../daos/account/AccountDao";
 import {Account} from "../domain/Account";
@@ -27,6 +26,7 @@ export class AccountRouter {
      */
     private init() {
         this.router.post('/', passport.authenticate('jwt', {session: false}), this.addAccount);
+        this.router.get('/', passport.authenticate('jwt', {session: false}), this.getAllAccounts);
         this.router.delete('/:accountId', passport.authenticate('jwt', {session: false}), this.deleteAccountById);
     }
 
@@ -49,6 +49,21 @@ export class AccountRouter {
         } else {
             return res.status(400).json({success: false, message: 'Required parameters "email" and "password" must be specified'});
         }
+    };
+
+    private getAllAccounts = (req: Request, res: Response) =>  {
+        let tenantId = req.user.id;
+
+        // this.accountDao.getAllAccountsForTenant(tenantId, (accountsDaoErr: Error, daoAccounts: Account[]) => {
+        //
+        //     if(accountsDaoErr) {
+        //         console.log('[ACCOUNTS]: ERROR: Could not retrieve accounts for tenant.', accountsDaoErr);
+        //         return res.status(500).json({success: false, message: 'Error retrieving accounts for tenant.'});
+        //     }
+        //
+        //     return res.status(200).json(daoAccounts);
+            return res.status(200).json({success: true, message: "Returning soon all accounts"});
+        // });
     };
 
     private deleteAccountById = (req: Request, res: Response) => {

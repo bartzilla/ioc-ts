@@ -83,6 +83,23 @@ export class DefaultAccountDaoImpl implements AccountDao {
 
     }
 
+    getAllAccountsForTenant(tenantId: string, callback: (error: Error, accounts?: Account[])=>void): void {
+        let application = new AccountModel();
+
+        application.getAccounts(applicationId, (err: Error, application: Application) => {
+            if(err) {
+                return callback(err);
+            }
+            else {
+                // check if tenant has no apps. Undefined or null
+                if (application == null) return callback(null, []);
+
+                return callback(null, application.accounts);
+            }
+        }, true);
+
+    }
+
     addApplication(application: Application, account: Account, callback: (error: Error, account?: Account)=>void): void {
         let accountModel = new AccountModel();
 

@@ -6,7 +6,6 @@ import * as bcrypt from "bcryptjs";
 
 export interface IAccountModel extends Account, Document {
     createAccount(newAccount: IAccountModel, callback: (err: Error | undefined, account?: IAccountModel) => void): void;
-    // createAccount(application: Application, newAccount: IAccountModel, callback: (err: Error | undefined, account?: IAccountModel) => void): void;
     addApplication(application: Application, account: Account, callback: (err: Error | undefined, account?: Account) => void): void
     deleteAccount(accountId: string, callback: (err: Error | undefined, accountId?: string) => void): void
     findAccountByEmail(email: string, callback:(err: Error | undefined, account?: IAccountModel) => void, populateRefs?: boolean): void;
@@ -31,6 +30,26 @@ AccountSchema.pre('remove', function(next) {
         { "$pull": { "accounts": this._id } },
         { "multi": true }, next);
 });
+
+AccountSchema.methods.getAllAccountsForTenant = function(email: string, callback: (err: Error | undefined, account?: IAccountModel) => void, populateRefs?: boolean): void{
+
+    if(populateRefs === true){
+        AccountModel.findOne({email: email})
+            .populate("applications")
+            .exec(function(dbErr, dbRes){
+                if (dbErr) return callback(dbErr);
+
+                return callback(undefined, dbRes);
+            });
+    } else {
+        AccountModel.findOne({email: email},
+            function(dbErr, dbRes){
+                if (dbErr) return callback(dbErr);
+                return callback(undefined, dbRes);
+            }
+        );
+    }
+};
 
 AccountSchema.methods.findAccountByEmail = function(email: string, callback: (err: Error | undefined, account?: IAccountModel) => void, populateRefs?: boolean): void{
 
