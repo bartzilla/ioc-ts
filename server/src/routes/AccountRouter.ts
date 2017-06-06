@@ -43,7 +43,7 @@ export class AccountRouter {
                     return res.status(500).json({success: false, message: 'Error adding account.'});
                 }
                 else {
-                    return res.status(200).json(daoAccount);
+                    return res.status(201).json(daoAccount);
                 }
             });
         } else {

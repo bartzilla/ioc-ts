@@ -48,7 +48,7 @@ export class TenantRouter {
                     return res.status(500).json({success: false, message: 'Error adding tenant.'});
                 }
 
-                return res.status(200).json(daoTenant);
+                return res.status(201).json(daoTenant);
             });
 
         } else {

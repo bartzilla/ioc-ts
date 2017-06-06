@@ -88,7 +88,7 @@ export class ApplicationRouter {
                         return res.status(500).json({success: false, message: 'Error adding application.'});
                     }
                     else {
-                        return res.status(200).json(daoApplication);
+                        return res.status(201).json(daoApplication);
                     }
                 })
             });
