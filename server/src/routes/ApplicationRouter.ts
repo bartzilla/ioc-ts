@@ -48,7 +48,15 @@ export class ApplicationRouter {
 
         let applicationId = req.params.applicationId;
 
-        this.applicationDao.deleteApplication(applicationId, (applicationsDaoErr: Error, daoApplication: any) => {
+        this.applicationDao.deleteApplication(applicationId, (applicationsDaoErr: Error, daoApplication: Application) => {
+
+            if(applicationsDaoErr) {
+                console.log('[APPLICATION]: ERROR: Could not delete application.', applicationsDaoErr);
+                return res.status(500).json({success: false, message: 'Error deleting application.'});
+            }
+
+            if (daoApplication == null) return res.status(404).json({success: false, message: 'The application was not found'});
+
             return res.status(200).json(daoApplication);
         });
     };
@@ -107,7 +115,7 @@ export class ApplicationRouter {
                 return res.status(500).json({success: false, message: 'Error getting accounts for give application.'});
             }
 
-            if(daoAccounts.length <= 0) res.status(404).json({success: false, message: 'The application was not found'});
+            if(daoAccounts.length <= 0) return res.status(404).json({success: false, message: 'The application was not found'});
 
             return res.status(200).json(daoAccounts);
         });

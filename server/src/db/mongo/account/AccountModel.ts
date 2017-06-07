@@ -7,7 +7,7 @@ import * as bcrypt from "bcryptjs";
 export interface IAccountModel extends Account, Document {
     createAccount(newAccount: IAccountModel, callback: (err: Error | undefined, account?: IAccountModel) => void): void;
     addApplication(application: Application, account: Account, callback: (err: Error | undefined, account?: Account) => void): void
-    deleteAccount(accountId: string, callback: (err: Error | undefined, accountId?: string) => void): void
+    deleteAccount(accountId: string, callback: (err: Error | undefined, account?: Account) => void): void
     findAccountByEmail(email: string, callback:(err: Error | undefined, account?: IAccountModel) => void, populateRefs?: boolean): void;
     findAccountById(accountId: string, callback:(err: Error | undefined, account?: IAccountModel) => void, populateRefs?: boolean): void;
 }
@@ -111,15 +111,17 @@ AccountSchema.methods.addApplication = function(application: IApplicationModel, 
     });
 };
 
-AccountSchema.methods.deleteAccount = function(accountId: string, callback: (err: Error | undefined, accountId?: string) => void): void{
+AccountSchema.methods.deleteAccount = function(accountId: string, callback: (err: Error | undefined, account?: Account) => void): void{
 
-    AccountModel.findOne({_id: accountId}, function(err, app){
+    AccountModel.findOne({_id: accountId}, function(err, account){
         if (err) return callback(err);
 
-        app.remove(function(err) {
+        if (account == null) return callback(null, account);
+
+        account.remove(function(err) {
             if (err) return callback(err);
 
-            return callback(undefined, accountId);
+            return callback(undefined, account);
         });
     });
 

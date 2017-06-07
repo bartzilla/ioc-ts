@@ -37,17 +37,20 @@ export class DefaultApplicationDaoImpl implements ApplicationDao {
         }, populateRefs);
     }
 
-    deleteApplication(applicationId: string, callback: (error: Error, response?) => void): void {
+    deleteApplication(applicationId: string, callback: (error: Error, application?: Application) => void): void {
 
         let application = new ApplicationModel();
 
-        application.deleteApplication(applicationId, (err: Error, appId: string) => {
+        application.deleteApplication(applicationId, (err: Error, application: Application) => {
             if(err) {
                 return callback(err);
             }
             else {
-                console.log('Application successfully deleted: ', appId);
-                return callback(null, appId);
+
+                if (application == null) return callback(null, application);
+
+                console.log('Application successfully deleted: ', application);
+                return callback(null, application);
             }
         });
     }

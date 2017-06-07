@@ -7,7 +7,7 @@ import {IAccountModel} from "../account/AccountModel";
 export interface IApplicationModel extends Application, Document {
     createApplication(tenant: Tenant, newApplication: IApplicationModel, callback: (err: Error | undefined, application?: IApplicationModel) => void): void;
     addAccount(applicationId: string, account: Account, callback: (err: Error | undefined, application?: Application) => void): void
-    deleteApplication(applicationId: string, callback: (err: Error | undefined, appId?: string) => void): void
+    deleteApplication(applicationId: string, callback: (err: Error | undefined, application?: Application) => void): void
     findApplicationById(applicationId: string, callback:(err: Error | undefined, application?: IApplicationModel) => void, populateRefs?: boolean): void;
     hasAccount(application: Application, accountId: string): boolean;
 }
@@ -46,18 +46,19 @@ ApplicationSchema.methods.createApplication = function(tenant: ITenantModel, new
 
 };
 
-ApplicationSchema.methods.deleteApplication = function(applicationId: string, callback: (err: Error | undefined, appId?: string) => void): void{
+ApplicationSchema.methods.deleteApplication = function(applicationId: string, callback: (err: Error | undefined, application?: Application) => void): void{
 
     ApplicationModel.findOne({_id: applicationId}, function(err, app){
         if (err) return callback(err);
 
+        if (app == null) return callback(null, app);
+
         app.remove(function(err) {
             if (err) return callback(err);
 
-            return callback(undefined, applicationId);
+            return callback(undefined, app);
         });
     });
-
 };
 
 ApplicationSchema.methods.addAccount = function(applicationId: string, account: IAccountModel, callback: (err: Error | undefined, application?: Application) => void): void{

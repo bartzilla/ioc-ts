@@ -70,7 +70,15 @@ export class AccountRouter {
 
         let accountId = req.params.accountId;
 
-        this.accountDao.deleteAccount(accountId, (accountDaoErr: Error, daoAccount: any) => {
+        this.accountDao.deleteAccount(accountId, (accountDaoErr: Error, daoAccount: Account) => {
+
+            if(daoAccount) {
+                console.log('[ACCOUNTS]: ERROR: Could not delete account.', daoAccount);
+                return res.status(500).json({success: false, message: 'Error deleting account.'});
+            }
+
+            if (daoAccount == null) return res.status(404).json({success: false, message: 'The account was not found'});
+
             return res.status(200).json(daoAccount);
         });
     };

@@ -52,16 +52,19 @@ export class DefaultAccountDaoImpl implements AccountDao {
         }, populateRefs);
     }
 
-    deleteAccount(accountId: string, callback: (error: Error, response?)=>void): void {
+    deleteAccount(accountId: string, callback: (error: Error, account?: Account)=>void): void {
         let account = new AccountModel();
 
-        account.deleteAccount(accountId, (err: Error, accountId: string) => {
+        account.deleteAccount(accountId, (err: Error, account: Account) => {
             if(err) {
                 return callback(err);
             }
             else {
-                console.log('Account successfully deleted: ', accountId);
-                return callback(null, accountId);
+
+                if (account == null) return callback(null, account);
+
+                console.log('Account successfully deleted: ', account);
+                return callback(null, account);
             }
         });
     }
