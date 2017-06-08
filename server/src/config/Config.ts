@@ -24,7 +24,7 @@ export class Config {
 
     public configPassport(): void {
 
-        var opts = <any>{};
+        let opts = <any>{};
         opts.jwtFromRequest = ExtractJwt.fromAuthHeader();
         opts.secretOrKey = Config.secret;
 

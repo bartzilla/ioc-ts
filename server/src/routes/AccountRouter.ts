@@ -25,9 +25,9 @@ export class AccountRouter {
      * endpoints.
      */
     private init() {
-        this.router.post('/', passport.authenticate('jwt', {session: false}), this.addAccount);
-        this.router.get('/', passport.authenticate('jwt', {session: false}), this.getAllAccounts);
-        this.router.delete('/:accountId', passport.authenticate('jwt', {session: false}), this.deleteAccountById);
+        this.router.post('/', this.addAccount);
+        this.router.get('/', this.getAllAccounts);
+        this.router.delete('/:accountId', this.deleteAccountById);
     }
 
     private addAccount = (req: Request, res: Response) =>  {

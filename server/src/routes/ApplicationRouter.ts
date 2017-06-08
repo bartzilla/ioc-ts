@@ -37,11 +37,11 @@ export class ApplicationRouter {
     private init() {
         this.router.post('/', passport.authenticate('jwt', {session: false}), this.addApplication);
 
-        this.router.get('/', passport.authenticate('jwt', {session: false}), this.getAllApplications);
+        this.router.get('/', this.getAllApplications);
 
-        this.router.delete('/:applicationId', passport.authenticate('jwt', {session: false}), this.deleteApplicationById);
+        this.router.delete('/:applicationId', this.deleteApplicationById);
 
-        this.router.get('/:applicationId/accounts', passport.authenticate('jwt', {session: false}), this.getAllAccounts);
+        this.router.get('/:applicationId/accounts', this.getAllAccounts);
     }
 
     private deleteApplicationById = (req: Request, res: Response) => {

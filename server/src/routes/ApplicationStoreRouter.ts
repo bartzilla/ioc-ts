@@ -30,7 +30,7 @@ export class ApplicationStoreRouter {
      * endpoints.
      */
     private init() {
-        this.router.post('/', passport.authenticate('jwt', {session: false}), this.mapApplicationAccount);
+        this.router.post('/', this.mapApplicationAccount);
     }
 
     private mapApplicationAccount = (req: Request, res: Response) =>  {

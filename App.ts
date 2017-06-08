@@ -14,6 +14,7 @@ import {Config} from "./server/src/config/Config";
 import {AccountRouter} from "./server/src/routes/AccountRouter";
 import {AccountDao} from "./server/src/daos/account/AccountDao";
 import {ApplicationStoreRouter} from "./server/src/routes/ApplicationStoreRouter";
+import {PassportConfig} from "./server/src/config/PassportConfig";
 var passport = require('passport');
 var TenantModel = require('./server/src/db/mongo/tenant/TenantModel');
 
@@ -29,6 +30,7 @@ class App {
     private accountRouter: AccountRouter;
     private consoleRouter: ConsoleRouter;
     private applicationStoreRouter: ApplicationStoreRouter;
+    private passportConfig: PassportConfig;
 
     //Run configuration methods on the Express instance.
     constructor() {
@@ -65,10 +67,9 @@ class App {
         this.express.use(passport.initialize());
         this.config.configPassport();
 
-        // placeholder route handler
-        this.express.use('/', router);
+        this.express.use('/v1', this.passportConfig.getAuthenticateRouter());
 
-        //tenant routes
+        //Authenticated tenant routes
         this.express.use('/v1/tenants', this.tenantRouter.getRouter());
         // application routes
         this.express.use('/v1/applications', this.applicationRouter.getRouter());
@@ -90,6 +91,9 @@ class App {
         let tenantDao = container.get<TenantDao>(DAO_TYPES.TenantDao);
         let applicationDao = container.get<ApplicationDao>(DAO_TYPES.ApplicationDao);
         let accountDao = container.get<AccountDao>(DAO_TYPES.AccountDao);
+
+        // Passport authenticate
+        this.passportConfig = new PassportConfig();
 
         // API Routes
         this.config = new Config(tenantDao);
