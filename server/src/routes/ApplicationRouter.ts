@@ -35,7 +35,7 @@ export class ApplicationRouter {
      * endpoints.
      */
     private init() {
-        this.router.post('/', passport.authenticate('jwt', {session: false}), this.addApplication);
+        this.router.post('/', this.addApplication);
 
         this.router.get('/', this.getAllApplications);
 

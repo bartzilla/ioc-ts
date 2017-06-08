@@ -61,13 +61,15 @@ class App {
             preflightContinue: false
         };
 
-        router.use(cors(options));
+        this.express.use(cors(options));
 
         // Initialize passport for use
         this.express.use(passport.initialize());
         this.config.configPassport();
 
-        this.express.use('/v1', this.passportConfig.getAuthenticateRouter());
+        this.express.use('/v1', passport.authenticate('jwt', {session: false}));
+
+        // this.express.use('/v1', this.passportConfig.getAuthenticateRouter());
 
         //Authenticated tenant routes
         this.express.use('/v1/tenants', this.tenantRouter.getRouter());
