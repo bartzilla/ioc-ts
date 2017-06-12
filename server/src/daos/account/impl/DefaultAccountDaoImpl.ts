@@ -39,7 +39,7 @@ export class DefaultAccountDaoImpl implements AccountDao {
     }
 
     getAccountById(accountId: string, callback: (error: Error, account?: Account)=>void, populateRefs?: boolean): void {
-        var account = new AccountModel();
+        let account = new AccountModel();
 
         account.findAccountById(accountId, (err: Error, account: Account) => {
             if(err) {
