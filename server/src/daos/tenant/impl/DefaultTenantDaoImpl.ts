@@ -27,7 +27,7 @@ export class DefaultTenantDaoImpl implements TenantDao {
     }
 
     getTenantById(tenantId: string, callback: (error: Error, tenant?: Tenant) => void, populateRefs?: boolean): void {
-        var tenant = new TenantModel();
+        let tenant = new TenantModel();
 
         tenant.findTenantById(tenantId, (err: Error, tenant: Tenant) => {
             if(err) {
@@ -41,7 +41,7 @@ export class DefaultTenantDaoImpl implements TenantDao {
     }
 
     getTenantsByEmail(email: string, callback: (err: Error, tenants?: Tenant[])=>void, populateRefs?: boolean): void {
-        var newTenant = new TenantModel();
+        let newTenant = new TenantModel();
 
         newTenant.findTenantsByEmail(email, (err: Error, tenants: Tenant[]) => {
             if(err) {
@@ -56,7 +56,7 @@ export class DefaultTenantDaoImpl implements TenantDao {
 
     authenticate(email: string, candidatePassword: string, callback: (error: Error, token?: string)=>void): void {
 
-        var newTenant = new TenantModel();
+        let newTenant = new TenantModel();
 
         newTenant.findTenantsByEmail(email, (err: Error, tenants: ITenantModel[]) => {
             if(err) {
@@ -79,7 +79,7 @@ export class DefaultTenantDaoImpl implements TenantDao {
                                 tenantId: tenants[0]._id
                             };
 
-                            var token = jwt.sign(payload, Config.secret, {
+                            let token = jwt.sign(payload, Config.secret, {
                                 expiresIn: 3600 // in seconds. represents 1 hour
                             });
                             return callback(null, token);
