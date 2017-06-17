@@ -16,7 +16,7 @@ export class DefaultTenantDaoImpl implements TenantDao {
         });
 
         newTenant.createTenant(newTenant, (err: Error, tenant: Tenant) => {
-            if(err) {
+            if (err) {
                 return callback(err);
             }
             else {
@@ -30,7 +30,7 @@ export class DefaultTenantDaoImpl implements TenantDao {
         let tenant = new TenantModel();
 
         tenant.findTenantById(tenantId, (err: Error, tenant: Tenant) => {
-            if(err) {
+            if (err) {
                 return callback(err);
             }
             else {
@@ -40,11 +40,11 @@ export class DefaultTenantDaoImpl implements TenantDao {
         }, populateRefs);
     }
 
-    getTenantsByEmail(email: string, callback: (err: Error, tenants?: Tenant[])=>void, populateRefs?: boolean): void {
+    getTenantsByEmail(email: string, callback: (err: Error, tenants?: Tenant[]) => void, populateRefs?: boolean): void {
         let newTenant = new TenantModel();
 
         newTenant.findTenantsByEmail(email, (err: Error, tenants: Tenant[]) => {
-            if(err) {
+            if (err) {
                 return callback(err);
             }
             else {
@@ -54,12 +54,12 @@ export class DefaultTenantDaoImpl implements TenantDao {
         }, populateRefs);
     }
 
-    authenticate(email: string, candidatePassword: string, callback: (error: Error, token?: string)=>void): void {
+    authenticate(email: string, candidatePassword: string, callback: (error: Error, token?: string) => void): void {
 
         let newTenant = new TenantModel();
 
         newTenant.findTenantsByEmail(email, (err: Error, tenants: ITenantModel[]) => {
-            if(err) {
+            if (err) {
                 return callback(err);
             }
             else {
@@ -68,7 +68,7 @@ export class DefaultTenantDaoImpl implements TenantDao {
                     // At the moment we only support one tenant per user, so we try to authenticate tenant
                     // in position zero
                     tenants[0].comparePasswords(candidatePassword, tenants[0].adminPassword, (err, isMatch) => {
-                        if(err) return callback(err);
+                        if (err) return callback(err);
                         if (isMatch && !err) {
                             // Create token if the password matched and no error was thrown
                             console.log(tenants[0]._id);
