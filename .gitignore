@@ -6,3 +6,7 @@ coverage
 *.d.ts
 *.js.map
 *.js
+*.iml
+modules.xml
+.idea/misc.xml
+*.ipr
